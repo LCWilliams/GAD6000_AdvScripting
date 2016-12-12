@@ -23,20 +23,23 @@ public class CS_PlayerDriver : MonoBehaviour {
         WheelManager = GetComponent<CS_WheelManager>();
     } // END - Start
 	
-	void Update () {
-        PlayerForward();
+    void FixedUpdate(){
+        if (Engine.v_EngineEnabled){
+            PlayerForward();
+            } // END -- Engine Enabled Only functions.
         PlayerSteer();
         PlayerBrake();
-	} // END - Update
-
+    } // END - Fixed Update.
 
 
     void PlayerForward() {
         float v_analogueInputValue = Input.GetAxis("P1_Acceleration");
+        Engine.Acceleration(v_analogueInputValue);
     } // END - Player forward input.
 
     void PlayerSteer() {
         float v_analogueInputValue = Input.GetAxis("P1_Steer");
+        Engine.Steering(v_analogueInputValue);
     } // END - Player Steer input.
 
     void PlayerBrake() {

@@ -10,44 +10,42 @@ using UnityEngine;
 using System.Collections;
 
 public class CS_WheelManager : MonoBehaviour {
-    // VARIABLES
-    
+    //Numural.
+    public int v_TotalWheels;
+    public float v_Steering;
     //Scripts:
     CS_VehicleEngine Engine; // Engine script attached to this vehicle.
 
     //Wheel Configuration Arrays.
     [Header("Front Wheels")]
-    public GameObject[] v_WheelsFront;
+    public WheelCollider[] v_WheelsFront;
     public bool v_PowerToFront; // applies driving power to FRONT wheels.
-    public bool v_SteeringFront;
-    public bool v_BrakesFront;
+    public bool v_SteeringFront; // Allows front steering.
+    public bool v_BrakesFront; // Allows front braking.
 
     [Header("Middle Wheels")]
+    public WheelCollider[] v_WheelsMid;
     public bool v_PowerToMid; // Applies driving power to MIDDLE wheels.
-    public bool v_BrakesMid;
-    public GameObject[] v_WheelsMid;
+    public bool v_BrakesMid; // Allows mid braking.
 
     [Header("Rear Wheels")]
+    public WheelCollider[] v_WheelsRear;
     public bool v_PowerToRear; // Applies driving power to REAR wheels.
-    public bool v_SteeringRear;
-    public bool v_BrakesRear;
-    public GameObject[] v_WheelsRear;
+    public bool v_SteeringRear; // Allows rear-steering.
+    public bool v_BrakesRear; // Allows rear braking.
 
 
     // Use this for initialization
 	void Start () {
         Engine = GetComponent<CS_VehicleEngine>();
-	}
+        v_TotalWheels = (v_WheelsFront.Length + v_WheelsMid.Length + v_WheelsRear.Length);
+	} // END - Start
 	
 	// Update is called once per frame
-	void Update () {
-	
-	}
+	void FixedUpdate () {
+	    for(int frontWheelIndex = v_WheelsFront.Length; frontWheelIndex < v_WheelsFront.Length; frontWheelIndex++) {
+            //v_WheelsFront[frontWheelIndex].transform;
+        } // END -- Front wheel position update
+	} // END - FixedUpdate.
 
-
-    void Gears() {
-        /*
-        Gear 1 : Torque : 
-        */
-    }
-}
+} // END - Monobehaviour.
