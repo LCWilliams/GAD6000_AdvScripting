@@ -69,9 +69,8 @@ public class CS_WheelManager : MonoBehaviour {
             Quaternion v_rotation;
             v_WheelsRear[WheelIndex].GetWorldPose(out v_position, out v_rotation);
 
-//            VisualWheel.position = v_position;
-            VisualWheel.rotation = v_rotation;
             VisualWheel.position = v_position;
+            VisualWheel.rotation = v_rotation;
         } // END -- Rear wheel position update
 
     } // END - FixedUpdate.

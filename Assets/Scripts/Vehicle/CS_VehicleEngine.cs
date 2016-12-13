@@ -91,41 +91,42 @@ public class CS_VehicleEngine : MonoBehaviour {
     } // END - EngineIgnition
 
     public void Acceleration(float p_accelerationAmmount) {
-        float v_torqueToApply = 500 * v_Efficiency;
+        float v_torqueToApply = (v_MaximumTorque * v_Efficiency) * p_accelerationAmmount;
         if (v_WheelManager.v_PowerToFront) {
             // Apply acceleration to front wheels.
-            for (int frontWheelIndex = v_WheelManager.v_WheelsFront.Length; frontWheelIndex < v_WheelManager.v_WheelsFront.Length; frontWheelIndex++) {
+            for (int frontWheelIndex = 0; frontWheelIndex < v_WheelManager.v_WheelsFront.Length; frontWheelIndex++) {
                 v_WheelManager.v_WheelsFront[frontWheelIndex].motorTorque = v_torqueToApply;
             } // END - For loop
         } // END - Power to front.
 
         // Only applies if there are wheels within the array:
         if (v_WheelManager.v_PowerToMid && v_WheelManager.v_WheelsMid.Length > 0) { 
-            for (int MidWheelIndex = v_WheelManager.v_WheelsMid.Length; MidWheelIndex < v_WheelManager.v_WheelsMid.Length; MidWheelIndex++){
+            for (int MidWheelIndex = 0; MidWheelIndex < v_WheelManager.v_WheelsMid.Length; MidWheelIndex++){
                 v_WheelManager.v_WheelsMid[MidWheelIndex].motorTorque = v_torqueToApply;
                 } // END - For loop. 
             } // END - Power to mid.
 
         if (v_WheelManager.v_PowerToRear) {
-            for (int RearWheelIndex = v_WheelManager.v_WheelsRear.Length; RearWheelIndex < v_WheelManager.v_WheelsRear.Length; RearWheelIndex++){
+            for (int RearWheelIndex = 0; RearWheelIndex < v_WheelManager.v_WheelsRear.Length; RearWheelIndex++){
                 v_WheelManager.v_WheelsRear[RearWheelIndex].motorTorque = v_torqueToApply;
             } // END - For loop. 
         } // END - Power to Rear.
 
     } // END - Acceleration.
 
-    public void Steering(float p_steerAmmount) {
+    public void Steering(float p_steerInput) {
+        float v_steerAmmount = v_WheelManager.v_Steering * p_steerInput;
         // FRONT steering loop.
         if (v_WheelManager.v_SteeringFront) {
-            for(int frontSteerIndex = v_WheelManager.v_WheelsFront.Length; frontSteerIndex < v_WheelManager.v_WheelsFront.Length; frontSteerIndex++) {
-                v_WheelManager.v_WheelsFront[frontSteerIndex].steerAngle = p_steerAmmount;
+            for(int frontSteerIndex = 0; frontSteerIndex < v_WheelManager.v_WheelsFront.Length; frontSteerIndex++) {
+                v_WheelManager.v_WheelsFront[frontSteerIndex].steerAngle = v_steerAmmount;
             } // END - for steering loop.
         }// END - Steering front.
 
         // REAR steering loop.
         if (v_WheelManager.v_SteeringRear) {
-            for (int rearSteerIndex = v_WheelManager.v_WheelsRear.Length; rearSteerIndex < v_WheelManager.v_WheelsRear.Length; rearSteerIndex++){
-                v_WheelManager.v_WheelsRear[rearSteerIndex].steerAngle = p_steerAmmount;
+            for (int rearSteerIndex = 0; rearSteerIndex < v_WheelManager.v_WheelsRear.Length; rearSteerIndex++){
+                v_WheelManager.v_WheelsRear[rearSteerIndex].steerAngle = v_steerAmmount *-1;
             } // END - for steering loop.
         } // END - Steering rear.
 
