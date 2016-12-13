@@ -41,11 +41,39 @@ public class CS_WheelManager : MonoBehaviour {
         v_TotalWheels = (v_WheelsFront.Length + v_WheelsMid.Length + v_WheelsRear.Length);
 	} // END - Start
 	
-	// Update is called once per frame
 	void FixedUpdate () {
-	    for(int frontWheelIndex = v_WheelsFront.Length; frontWheelIndex < v_WheelsFront.Length; frontWheelIndex++) {
-            //v_WheelsFront[frontWheelIndex].transform;
+        for (int WheelIndex = 0; WheelIndex < v_WheelsFront.Length; WheelIndex++) {
+            Transform VisualWheel = v_WheelsFront[WheelIndex].GetComponent<Collider>().transform.GetChild(0);
+            Vector3 v_position;
+            Quaternion v_rotation;
+            v_WheelsFront[WheelIndex].GetWorldPose(out v_position, out v_rotation);
+
+            VisualWheel.position = v_position;
+            VisualWheel.rotation = v_rotation;
         } // END -- Front wheel position update
-	} // END - FixedUpdate.
+
+        for (int WheelIndex = 0; WheelIndex < v_WheelsMid.Length; WheelIndex++){
+            Transform VisualWheel = v_WheelsMid[WheelIndex].GetComponent<Collider>().transform.GetChild(0);
+            Vector3 v_position;
+            Quaternion v_rotation;
+            v_WheelsMid[WheelIndex].GetWorldPose(out v_position, out v_rotation);
+
+            VisualWheel.position = v_position;
+            VisualWheel.rotation = v_rotation;
+        } // END -- Mid wheel position update
+
+
+        for (int WheelIndex = 0; WheelIndex < v_WheelsRear.Length; WheelIndex++){
+            Transform VisualWheel = v_WheelsRear[WheelIndex].GetComponent<Collider>().transform.GetChild(0);
+            Vector3 v_position;
+            Quaternion v_rotation;
+            v_WheelsRear[WheelIndex].GetWorldPose(out v_position, out v_rotation);
+
+//            VisualWheel.position = v_position;
+            VisualWheel.rotation = v_rotation;
+            VisualWheel.position = v_position;
+        } // END -- Rear wheel position update
+
+    } // END - FixedUpdate.
 
 } // END - Monobehaviour.
