@@ -16,11 +16,14 @@ public class CS_PlayerDriver : MonoBehaviour {
     //Scripts:
     CS_VehicleEngine Engine; // Engine script attached to this vehicle.
     CS_WheelManager WheelManager; // Wheel management script attached to this vehicle.
+    // Components:
+    public GameObject v_PlayerCamera;
 
     void Start () {
         // Get components:
         Engine = GetComponent<CS_VehicleEngine>();
         WheelManager = GetComponent<CS_WheelManager>();
+        
     } // END - Start
 	
     void FixedUpdate(){
@@ -29,6 +32,7 @@ public class CS_PlayerDriver : MonoBehaviour {
             } // END -- Engine Enabled Only functions.
         PlayerSteer();
         PlayerBrake();
+        PlayerTurretRotation();
     } // END - Fixed Update.
 
 
@@ -45,5 +49,20 @@ public class CS_PlayerDriver : MonoBehaviour {
     void PlayerBrake() {
         float v_analogueInputValue = Input.GetAxis("P1_Brake");
     } // END - Player brake input.
+
+    void PlayerTurretRotation() {
+//        Debug.Log(Input.mousePosition.x);
+        int ScreenWidthSegment = Screen.width / 3;
+        Vector3 v_MousePositionOnScreen = Input.mousePosition;
+        if(v_MousePositionOnScreen.x < (ScreenWidthSegment * 1)) {
+            Engine.TurretRotation(+1);
+            //Debug.Log("Test: Rot: Left");
+        } else if(v_MousePositionOnScreen.x > (ScreenWidthSegment * 2)){
+            Engine.TurretRotation(-1);
+        }else {
+            return;
+        } // END else if loops.
+
+    } // END player mouse input.
 
 } // END - CS_PlayerDriver : Monobehaviour.

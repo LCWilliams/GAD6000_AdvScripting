@@ -24,15 +24,30 @@ public class CS_VehicleEngine : MonoBehaviour {
     [Header("Gears & Torque")]
     public int v_MaximumTorque; // Max amount of torque the vehicle is capable of producing.
     [Range(0,5)] public int v_Gear; // Current gear of the vehicle.
+    [Header("Turret & Gun")]
+    public Transform v_Turret;
+    public float v_TurretTraverseSpeed;
+    [Tooltip("Applies a limit to the rotation/traverse of the turret")]public bool v_LimitTraverse;
+    [Range(-170,0)] public float v_MaxTurretTraverseLeft;
+    [Range(0, 170)] public float v_MaxTurretTraverseRight;
+    public Transform v_Gun;
+    public float v_GunElevationSpeed;
+    [Tooltip("Applies a limit to the rotation/elevation of the gun")] public bool v_LimitElevation;
+    [Range(0, 25)] public float v_MaxGunElevation;
+    [Range(0, -10)] public float v_MaxGunDepression;
     [Header("Deficiency Limits")]
     [Tooltip("Higher values equate to the engine cutting out more frequently")]
     [Range(0.0f,0.5f)] public float v_AutoEngineDisableThreshold;
     [Range(0.0f,0.5f)] public float v_rechargeThreshold;
+    [Range(0.0f,1.0f)] public float v_GUIUpdateThreshold;
     CS_WheelManager v_WheelManager;
 
     // Use this for initialization
     void Start () {
         v_WheelManager = GetComponent<CS_WheelManager>();
+        v_Turret = GameObject.Find("Turret").GetComponent<Transform>();
+        v_Gun = GameObject.Find("Gun").GetComponent<Transform>();
+
 //        ToggleEngine(); // [DEBUG] -- turns on vehicle.
 	} // END - Start
 	
@@ -47,7 +62,6 @@ public class CS_VehicleEngine : MonoBehaviour {
             EngineIgnition();
         } // END - Engine Disabled only functions
 	} // END - Update.
-
 
     void AutoEngineDisable(){
         // Disables the engine when power exceeds the maximum threshold.
@@ -89,6 +103,8 @@ public class CS_VehicleEngine : MonoBehaviour {
     public void EngineIgnition() {
         // Hold E.
     } // END - EngineIgnition
+
+    // ---------------------------------------------------------------------------------------------------------
 
     public void Acceleration(float p_accelerationAmmount) {
         float v_torqueToApply = (v_MaximumTorque * v_Efficiency) * p_accelerationAmmount;
@@ -146,6 +162,13 @@ public class CS_VehicleEngine : MonoBehaviour {
         } // END - Brakes to Rear.
     } // END - Braking.
 
+    // ---------------------------------------------------------------------------------------------------------
 
+    public void TurretRotation(int p_Direction) {
+//        float currentTurretRotation = v_Turret.localEulerAngles.y;
+        v_Turret.Rotate(new Vector3(0, 0, v_Turret.rotation.z + (v_TurretTraverseSpeed * p_Direction)));
+// broken            v_Turret.localRotation.y = v_Turret.localRotation;
+        
+    } // END - Turret Rotation.
 
 } // END - Mono Behaviour.
