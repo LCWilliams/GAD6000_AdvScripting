@@ -24,12 +24,15 @@ public class CS_GunShell_Basic : MonoBehaviour {
     public float v_ExplosionRadius;
     public AudioClip v_ExplosionAudio;
     public GameObject v_ExplosionEffects;
+    bool v_Exploded; // Used to determine whether the shell has exploded.
+    ParticleSystem.Particle[] PS_ExplosionParticles;
 
 	// Use this for initialization
 	void Start () {
+        v_Exploded = false;
         if (v_ExplosionEffects == null) { v_ExplosionEffects = GameObject.Find("ExplosionEffects"); }
         //        Destroy(this.gameObject, v_ShellLifetime);
-        this.GetComponent<Rigidbody>().AddForce((Vector3.forward * v_ShellPropulsionForce), ForceMode.Impulse);
+        this.GetComponent<Rigidbody>().AddRelativeForce((Vector3.forward * v_ShellPropulsionForce), ForceMode.Impulse);
     }
 
     void OnCollisionEnter(Collision p_HitObject){
@@ -46,26 +49,32 @@ public class CS_GunShell_Basic : MonoBehaviour {
         }
     } // END - OnCollisionEnter.
 
+    void FixedUpdate(){
+            if(v_Exploded){
+                int v_AliveParticlesInExplosion = v_ExplosionEffects.GetComponentInChildren<ParticleSystem>().particleCount;
+                if ( v_AliveParticlesInExplosion == 0) {
+                Destroy(this.gameObject, 5);
+                } // END - If no particles alive; destroy object.
+            } // END - if exploded is true.
+        } // END - Update.
 
     void ShellExplode(float p_damage, float p_radius){
+        v_Exploded = true;
         this.GetComponent<Rigidbody>().isKinematic = true;
         Destroy(this.GetComponent<MeshRenderer>());
         v_ExplosionEffects.SetActive(true);
+        ParticleSystem.EmissionModule v_TrailParticle = this.GetComponentInChildren<ParticleSystem>().emission;
+        v_TrailParticle.rate = 0;
+
 
         Vector3 v_ExplosionOrigin = transform.position;
         Collider[] v_ObjectsHit = Physics.OverlapSphere(v_ExplosionOrigin, v_ExplosionRadius);
         foreach (Collider v_ObjectHit in v_ObjectsHit) {
             Rigidbody v_ObjectHitRigidbody = v_ObjectHit.GetComponent<Rigidbody>();
             if (v_ObjectHitRigidbody != null) {
-                v_ObjectHitRigidbody.AddExplosionForce(v_ExplosionRadius * v_ExplosionDamage, v_ExplosionOrigin, v_ExplosionRadius, 0, ForceMode.Impulse);
+                v_ObjectHitRigidbody.AddExplosionForce(100, v_ExplosionOrigin, v_ExplosionRadius, 0, ForceMode.Impulse);
             } // END - If object has rigidbody.
         } // END - for each, explosion loop.
-
-        
-        // Destroy(this.gameObject);
-    }    
-
-
-
+    }  // END - Shell explode.   
 
 } // END - Monobehaviour.

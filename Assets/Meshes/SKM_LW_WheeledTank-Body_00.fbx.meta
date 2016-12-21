@@ -239,6 +239,7 @@ ModelImporter:
     4300018: SM_Wheel-FrontL
     4300020: Cylinder
     4300022: Cube
+    7400000: VehicleBone|Gun_StandardShot
     9500000: //RootNode
     13700000: SKM_Vehicle
   materials:
@@ -284,7 +285,7 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
-  importAnimation: 0
+  importAnimation: 1
   copyAvatar: 0
   humanDescription:
     human: []
