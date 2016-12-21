@@ -28,9 +28,9 @@ public class CS_GunShell_Basic : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         if (v_ExplosionEffects == null) { v_ExplosionEffects = GameObject.Find("ExplosionEffects"); }
-//        Destroy(this.gameObject, v_ShellLifetime);
+        //        Destroy(this.gameObject, v_ShellLifetime);
         this.GetComponent<Rigidbody>().AddForce((Vector3.forward * v_ShellPropulsionForce), ForceMode.Impulse);
-	}
+    }
 
     void OnCollisionEnter(Collision p_HitObject){
         if (v_AllowBounce) { // Bounce.
@@ -64,6 +64,7 @@ public class CS_GunShell_Basic : MonoBehaviour {
         
         // Destroy(this.gameObject);
     }    
+
 
 
 
