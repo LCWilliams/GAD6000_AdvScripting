@@ -102,6 +102,7 @@ ModelImporter:
     100188: upper_arm.L
     100190: upper_arm.R
     100192: Cylinder
+    100194: Cube
     400000: Gun
     400002: GunCharger
     400004: //RootNode
@@ -199,6 +200,7 @@ ModelImporter:
     400188: upper_arm.L
     400190: upper_arm.R
     400192: Cylinder
+    400194: Cube
     2300000: SM_Wheel
     2300002: SM_Wheel-FrontL
     2300004: SM_Wheel-FrontLMid
@@ -211,6 +213,7 @@ ModelImporter:
     2300018: SKM_Vehicle
     2300020: Cylinder
     2300022: //RootNode
+    2300024: Cube
     3300000: SM_Wheel
     3300002: SM_Wheel-FrontL
     3300004: SM_Wheel-FrontLMid
@@ -223,6 +226,7 @@ ModelImporter:
     3300018: SKM_Vehicle
     3300020: Cylinder
     3300022: //RootNode
+    3300024: Cube
     4300000: SKM_Vehicle
     4300002: SM_Wheel
     4300004: SM_Wheel-RearR
@@ -234,6 +238,7 @@ ModelImporter:
     4300016: SM_Wheel-FrontLMid
     4300018: SM_Wheel-FrontL
     4300020: Cylinder
+    4300022: Cube
     9500000: //RootNode
     13700000: SKM_Vehicle
   materials:
