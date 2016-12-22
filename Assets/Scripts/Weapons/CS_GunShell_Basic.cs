@@ -52,8 +52,8 @@ public class CS_GunShell_Basic : MonoBehaviour {
     void FixedUpdate(){
             if(v_Exploded){
                 int v_AliveParticlesInExplosion = v_ExplosionEffects.GetComponentInChildren<ParticleSystem>().particleCount;
-                if ( v_AliveParticlesInExplosion == 0) {
-                Destroy(this.gameObject, 5);
+                if ( v_AliveParticlesInExplosion == 0) { // DESTROY on no particles left.
+                    Destroy(this.gameObject);
                 } // END - If no particles alive; destroy object.
             } // END - if exploded is true.
         } // END - Update.

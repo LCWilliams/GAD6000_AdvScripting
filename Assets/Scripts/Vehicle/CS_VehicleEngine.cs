@@ -2,7 +2,7 @@
 AUTHOR(S): LEE WILLIAMS		DATE: 10/2016 - 01/2017
 EDITOR(S): SCOTT ANDERS
 SCRIPT HOLDERS: PF_PlayerVehicle
-INBOUND REFERENCES: CS_WheelManager | CS_PlayerDriver
+INBOUND REFERENCES: CS_WheelManager | CS_PlayerDriver | CS_AIDriver | CS_WheeledTankWeapon_00
 OUTBOUND REFERENCES: CS_WheelManager
 OVERVIEW:  Controls the main engine of the vehicle.  
 Efficiency is used as a multiplier of 0-1 on various components.
@@ -16,17 +16,17 @@ public class CS_VehicleEngine : MonoBehaviour {
 
     [Header("Engine: Enabled")]
     public bool v_EngineEnabled;
-    [Header("Engine: Power & Efficiency")]
+    [Header("Engine: Power & Efficiency")][Space(10)]
     [Range(0.1f,1.0f)] public float v_Efficiency; // Determines how well the engine & car components function.
     public float v_EnginePower; // How much power is currently being used. 
     public float v_PowerCap; // The maximum amount of power the engine is capable of holding.
     public float v_RechargeRate; // How much power is recharged per second.
-    [Header("Gears & Torque")]
+    [Header("Gears & Torque")][Space(10)]
     public float v_MaximumTorque; // Max amount of torque the vehicle is capable of producing.
     [Tooltip("The amount of torque the wheels have when the engine is DISABLED")]public float v_WheelBrakeTorque;
     [Tooltip("The amount of additional torque the engine applies to brakes when enabled")]public float v_PowerBrakeTorque;
     [Range(0,5)] public int v_Gear; // Current gear of the vehicle.
-    [Header("Turret & Gun")]
+    [Header("Turret & Gun")][Space(10)]
     public Transform v_Turret;
     public float v_TurretTraverseSpeed;
     [Tooltip("Applies a limit to the rotation/traverse of the turret")]public bool v_LimitTraverse;
@@ -37,15 +37,16 @@ public class CS_VehicleEngine : MonoBehaviour {
     [Range(0, 90)] public float v_MaxGunElevation;
     [Range(0, 90)] public float v_MaxGunDepression;
     bool v_GunElevated; // Used to determine if the gun is currently in an elevated rotation.
-    [Header("Deficiency Limits")]
+    [Header("Deficiency Limits")][Space(10)]
     [Tooltip("Higher values equate to the engine cutting out more frequently")]
     [Range(0.0f,0.5f)] public float v_AutoEngineDisableThreshold;
     [Range(0.0f,0.5f)] public float v_rechargeThreshold;
     [Range(0.0f,1.0f)] public float v_GUIUpdateThreshold;
-    [Header("Misc")]
+    [Header("Misc")][Space(10)]
     public Transform v_CenterofMass;
     CS_WheelManager v_WheelManager;
     public Quaternion v_GunOriginalPosition;
+//    Animation v_VehicleAnimation;
 
     private void Awake(){
         this.transform.GetComponent<Rigidbody>().centerOfMass = v_CenterofMass.localPosition;

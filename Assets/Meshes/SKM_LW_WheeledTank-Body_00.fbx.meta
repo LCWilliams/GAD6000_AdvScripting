@@ -103,6 +103,14 @@ ModelImporter:
     100190: upper_arm.R
     100192: Cylinder
     100194: Cube
+    100196: BezierCircle
+    100198: BezierCurve
+    100200: Bone
+    100202: Bone_end
+    100204: Cube.001
+    100206: SM_VehicleShell_00
+    100208: SM_WheeledTank_InteriorPanels
+    100210: SM_WheelFlap
     400000: Gun
     400002: GunCharger
     400004: //RootNode
@@ -201,6 +209,14 @@ ModelImporter:
     400190: upper_arm.R
     400192: Cylinder
     400194: Cube
+    400196: BezierCircle
+    400198: BezierCurve
+    400200: Bone
+    400202: Bone_end
+    400204: Cube.001
+    400206: SM_VehicleShell_00
+    400208: SM_WheeledTank_InteriorPanels
+    400210: SM_WheelFlap
     2300000: SM_Wheel
     2300002: SM_Wheel-FrontL
     2300004: SM_Wheel-FrontLMid
@@ -214,6 +230,12 @@ ModelImporter:
     2300020: Cylinder
     2300022: //RootNode
     2300024: Cube
+    2300026: BezierCircle
+    2300028: BezierCurve
+    2300030: Cube.001
+    2300032: SM_VehicleShell_00
+    2300034: SM_WheeledTank_InteriorPanels
+    2300036: SM_WheelFlap
     3300000: SM_Wheel
     3300002: SM_Wheel-FrontL
     3300004: SM_Wheel-FrontLMid
@@ -227,6 +249,12 @@ ModelImporter:
     3300020: Cylinder
     3300022: //RootNode
     3300024: Cube
+    3300026: BezierCircle
+    3300028: BezierCurve
+    3300030: Cube.001
+    3300032: SM_VehicleShell_00
+    3300034: SM_WheeledTank_InteriorPanels
+    3300036: SM_WheelFlap
     4300000: SKM_Vehicle
     4300002: SM_Wheel
     4300004: SM_Wheel-RearR
@@ -239,8 +267,16 @@ ModelImporter:
     4300018: SM_Wheel-FrontL
     4300020: Cylinder
     4300022: Cube
+    4300024: SM_WheelFlap
+    4300026: Cube.001
+    4300028: BezierCircle
+    4300030: BezierCurve
+    4300032: SM_VehicleShell_00
+    4300034: SM_WheeledTank_InteriorPanels
     7400000: VehicleBone|Gun_StandardShot
+    7400002: VehicleBone|TankIdle
     9500000: //RootNode
+    11100000: //RootNode
     13700000: SKM_Vehicle
   materials:
     importMaterials: 0
@@ -251,25 +287,109 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
-    motionNodeName: 
+    motionNodeName: <Root Transform>
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    animationCompression: 3
+    animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
-    animationWrapMode: 0
+    animationWrapMode: 1
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: VehicleBone|Gun_StandardShot
+      takeName: VehicleBone|Gun_StandardShot
+      firstFrame: 0
+      lastFrame: 50
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: SKM_Vehicle
+        weight: 0
+      - path: VehicleBone
+        weight: 0
+      - path: VehicleBone/VehicleBody
+        weight: 0
+      - path: VehicleBone/VehicleBody/Turret
+        weight: 0
+      - path: VehicleBone/VehicleBody/Turret/Gun
+        weight: 0
+      - path: VehicleBone/VehicleBody/Turret/Gun/GunCharger
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: VehicleBone|TankIdle
+      takeName: VehicleBone|TankIdle
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: SKM_Vehicle
+        weight: 1
+      - path: VehicleBone
+        weight: 1
+      - path: VehicleBone/VehicleBody
+        weight: 1
+      - path: VehicleBone/VehicleBody/Turret
+        weight: 1
+      - path: VehicleBone/VehicleBody/Turret/Gun
+        weight: 1
+      - path: VehicleBone/VehicleBody/Turret/Gun/GunCharger
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
     addColliders: 0
-    importBlendShapes: 1
+    importBlendShapes: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
@@ -300,7 +420,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 1
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

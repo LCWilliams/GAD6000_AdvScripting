@@ -16,7 +16,8 @@ public class CS_PlayerDriver : MonoBehaviour {
     //Scripts:
     CS_VehicleEngine Engine; // Engine script attached to this vehicle.
     CS_WheelManager WheelManager; // Wheel management script attached to this vehicle.
-    CS_WheeledTankInteriorPanels v_InteriorPanels;
+    CS_WheeledTankInteriorPanels v_InteriorPanels; // Player UI elements.
+    CS_WheeledTankWeapons_00 v_TankWeapons; // player weapon scripts.
     // Components:
     public GameObject v_PlayerCamera;
     int v_CurrentCamera;
@@ -30,10 +31,15 @@ public class CS_PlayerDriver : MonoBehaviour {
         Engine = GetComponent<CS_VehicleEngine>();
         WheelManager = GetComponent<CS_WheelManager>();
         v_InteriorPanels = GetComponent<CS_WheeledTankInteriorPanels>();
+        v_TankWeapons = GetComponent<CS_WheeledTankWeapons_00>();
     } // END - Start
 	
     void Update() {
-        PlayerChangeMode();
+            PlayerShoot();
+        if (Engine.v_EngineEnabled){
+            PlayerChangeMode();
+            PlayerForward();
+        } // END -- Engine Enabled Only functions.
     }
 
     void FixedUpdate(){
@@ -106,5 +112,12 @@ public class CS_PlayerDriver : MonoBehaviour {
         }// END IF input.
 
     } // END PlayerChangeMode.
+
+    void PlayerShoot(){
+        if(Input.GetButtonDown("P1_Shoot")) {
+            Debug.Log("Fired");
+            v_TankWeapons.FireMain_Basic();
+        } // END - Input/axis.
+    } // END - Player shoot.
 
 } // END - CS_PlayerDriver : Monobehaviour.
