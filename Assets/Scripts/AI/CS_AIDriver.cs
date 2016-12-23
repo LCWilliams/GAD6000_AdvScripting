@@ -50,7 +50,7 @@ public class CS_AIDriver : MonoBehaviour
         v_InteriorPanels = GetComponent<CS_WheeledTankInteriorPanels>();
 
 		Player = GameObject.Find ("PF_WheeledTank_00");
-		Player.GetComponent (Transform);
+		Player.GetComponent<Transform>();
 		CurrentTarget = Player;
 
 
