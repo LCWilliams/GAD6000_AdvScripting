@@ -16,16 +16,19 @@ public class CS_VehicleEngine : MonoBehaviour {
 
     [Header("Engine: Enabled")]
     public bool v_EngineEnabled;
+
     [Header("Engine: Power & Efficiency")][Space(10)]
     [Range(0.1f,1.0f)] public float v_Efficiency; // Determines how well the engine & car components function.
     public float v_EnginePower; // How much power is currently being used. 
     public float v_PowerCap; // The maximum amount of power the engine is capable of holding.
     public float v_RechargeRate; // How much power is recharged per second.
+
     [Header("Gears & Torque")][Space(10)]
     public float v_MaximumTorque; // Max amount of torque the vehicle is capable of producing.
     [Tooltip("The amount of torque the wheels have when the engine is DISABLED")]public float v_WheelBrakeTorque;
     [Tooltip("The amount of additional torque the engine applies to brakes when enabled")]public float v_PowerBrakeTorque;
     [Range(0,5)] public int v_Gear; // Current gear of the vehicle.
+
     [Header("Turret & Gun")][Space(10)]
     public Transform v_Turret;
     public float v_TurretTraverseSpeed;
@@ -37,11 +40,18 @@ public class CS_VehicleEngine : MonoBehaviour {
     [Range(0, 90)] public float v_MaxGunElevation;
     [Range(0, 90)] public float v_MaxGunDepression;
     bool v_GunElevated; // Used to determine if the gun is currently in an elevated rotation.
+
     [Header("Deficiency Limits")][Space(10)]
     [Tooltip("Higher values equate to the engine cutting out more frequently")]
     [Range(0.0f,0.5f)] public float v_AutoEngineDisableThreshold;
     [Range(0.0f,0.5f)] public float v_rechargeThreshold;
     [Range(0.0f,1.0f)] public float v_GUIUpdateThreshold;
+
+    [Header("Engine Audio")][Space(10)]
+    public AudioClip ac_EngineIdle;
+    public AudioClip ac_EngineStart;
+    AudioSource as_EngineAudioSource;
+
     [Header("Misc")][Space(10)]
     public Transform v_CenterofMass;
     CS_WheelManager v_WheelManager;
@@ -55,6 +65,7 @@ public class CS_VehicleEngine : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        as_EngineAudioSource = GameObject.Find("Engine").GetComponent<AudioSource>();
         v_WheelManager = GetComponent<CS_WheelManager>();
         v_Turret = GameObject.Find("Turret").GetComponent<Transform>();
         v_Gun = GameObject.Find("Gun").GetComponent<Transform>();
@@ -120,6 +131,13 @@ public class CS_VehicleEngine : MonoBehaviour {
     // ---------------------------------------------------------------------------------------------------------
 
     public void Acceleration(float p_accelerationAmmount) {
+        if(p_accelerationAmmount != 0) { // Increase engine audio pitch based on input.
+            as_EngineAudioSource.pitch = (Mathf.Lerp(as_EngineAudioSource.pitch, (0.5f + (1 * p_accelerationAmmount)), 0.1f));
+        } else{
+            as_EngineAudioSource.pitch = (Mathf.Lerp(as_EngineAudioSource.pitch, 1, 0.1f));
+        }
+
+
         float v_torqueToApply = (v_MaximumTorque * v_Efficiency) * p_accelerationAmmount;
         if (v_WheelManager.v_PowerToFront) {
             // Apply acceleration to front wheels.
@@ -142,6 +160,8 @@ public class CS_VehicleEngine : MonoBehaviour {
         } // END - Power to Rear.
 
     } // END - Acceleration.
+
+
 
     public void Steering(float p_steerInput) {
         float v_steerAmmount = v_WheelManager.v_Steering * p_steerInput;

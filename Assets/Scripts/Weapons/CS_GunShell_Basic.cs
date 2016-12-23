@@ -14,7 +14,6 @@ public class CS_GunShell_Basic : MonoBehaviour {
     [Header("Shell Characteristics:")]
     public int v_ShellLifetime;
     public float v_ShellPropulsionForce;
-    [Tooltip("Will create explosion at end of shell life")]public bool v_ExplodeOnDestroy;
     [Header("Bounce:")]
     [Tooltip("Will explode on contact if false")]public bool v_AllowBounce;
     public int v_BouncesAllowed;
@@ -29,6 +28,8 @@ public class CS_GunShell_Basic : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        Destroy(this.gameObject, v_ShellLifetime);
+
         v_Exploded = false;
         if (v_ExplosionEffects == null) { v_ExplosionEffects = GameObject.Find("ExplosionEffects"); }
         //        Destroy(this.gameObject, v_ShellLifetime);
@@ -72,7 +73,7 @@ public class CS_GunShell_Basic : MonoBehaviour {
         foreach (Collider v_ObjectHit in v_ObjectsHit) {
             Rigidbody v_ObjectHitRigidbody = v_ObjectHit.GetComponent<Rigidbody>();
             if (v_ObjectHitRigidbody != null) {
-                v_ObjectHitRigidbody.AddExplosionForce(100, v_ExplosionOrigin, v_ExplosionRadius, 0, ForceMode.Impulse);
+                v_ObjectHitRigidbody.AddExplosionForce(v_ExplosionDamage, v_ExplosionOrigin, v_ExplosionRadius, 0, ForceMode.Impulse);
             } // END - If object has rigidbody.
         } // END - for each, explosion loop.
     }  // END - Shell explode.   

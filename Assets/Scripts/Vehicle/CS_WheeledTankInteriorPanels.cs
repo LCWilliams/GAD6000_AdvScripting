@@ -23,8 +23,8 @@ public class CS_WheeledTankInteriorPanels : MonoBehaviour {
     GameObject v_GunView;
 
     [Header("Panel: Curved Center")]
-    public Image v_TankBase;
-    public RectTransform v_TankTurret;
+    public Image GUI_TankBase;
+    public RectTransform GUI_TankTurret;
 
     [Header("VisualEffects")]
     ParticleSystem v_ConsoleParticleSystem;
@@ -62,19 +62,14 @@ public class CS_WheeledTankInteriorPanels : MonoBehaviour {
         } // END - Else Apply Defficiency block effect.
         
     } // END - Update.
-
-    private void FixedUpdate(){
-    //    if (v_Engine.v_Efficiency <= v_SparksAtEfficiency){
-     //       SparkEmitter_Increase(true, ((v_Engine.v_Efficiency * v_SparkEmitterMaxRate) * (1 - v_Engine.v_Efficiency)));
-      //  } // END - Start sparks when efficiency reaches below this point.
-    }
+    
 
     void UpdatePanels() {
 //        Vector3 v_turretRotationAsEuler = v_Engine.v_Turret.eulerAngles;
 //        Debug.Log(v_turretRotationAsEuler.y
 //        Quaternion v_TurretRotAsQuaternion = Quaternion.Euler(0, 0, v_turretRotationAsEuler.y * -1);
 //        Mathf.LerpAngle(v_turretRotationAsEuler.x,v_turretRotationAsEuler.y,v_turretRotationAsEuler.z);
-        v_TankTurret.localRotation = Quaternion.Euler(v_Engine.v_Turret.transform.localEulerAngles);
+        GUI_TankTurret.localRotation = Quaternion.Euler(v_Engine.v_Turret.transform.localEulerAngles);
 
 
     } // END - Update Panels.
