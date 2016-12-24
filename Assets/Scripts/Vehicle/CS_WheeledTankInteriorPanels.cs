@@ -18,20 +18,23 @@ public class CS_WheeledTankInteriorPanels : MonoBehaviour {
     // VARIABLES:
     public CS_VehicleEngine v_Engine;
 
-    [Header("Main Screens:")]
+    [Header("Main Screens:")][Space(10)]
     GameObject v_Viewfinder;
     GameObject v_GunView;
 
-    [Header("Panel: Curved Center")]
+    [Header("Vehicle Status Elements:")][Space(10)]
     public Image GUI_TankBase;
     public RectTransform GUI_TankTurret;
+    public Text GUI_CurrentGear;
+    public Text GUI_CurrentSpeed;
+    public Text GUI_Brakes;
 
-    [Header("VisualEffects")]
-    ParticleSystem v_ConsoleParticleSystem;
-    ParticleSystem.EmissionModule v_ConsoleSparkEmitter;
+    [Header("VisualEffects")] [Space(10)]
     [Range(100, 5000)]public int v_SparkEmitterMaxRate;
     [Range(0.5f, 0.95f)][Tooltip("Sparks will only begin to start when efficiency goes BELOW this number")]public float v_SparksAtEfficiency;
     [Range(1, 100)][Tooltip("Rate deduction per frame of spark emitter.")]public int v_SparkEmitterRateDecrease;
+    ParticleSystem v_ConsoleParticleSystem;
+    ParticleSystem.EmissionModule v_ConsoleSparkEmitter;
     //    public UnityEngine.UI.Image v_TankBase;
 
     // END - VARIABLES
@@ -65,12 +68,32 @@ public class CS_WheeledTankInteriorPanels : MonoBehaviour {
     
 
     void UpdatePanels() {
-//        Vector3 v_turretRotationAsEuler = v_Engine.v_Turret.eulerAngles;
-//        Debug.Log(v_turretRotationAsEuler.y
-//        Quaternion v_TurretRotAsQuaternion = Quaternion.Euler(0, 0, v_turretRotationAsEuler.y * -1);
-//        Mathf.LerpAngle(v_turretRotationAsEuler.x,v_turretRotationAsEuler.y,v_turretRotationAsEuler.z);
+        // Update GUI tank turret rotation: copy current turet BONE rotation and apply directly.
         GUI_TankTurret.localRotation = Quaternion.Euler(v_Engine.v_Turret.transform.localEulerAngles);
+        // PREVIOUS ATTEMPTS:
+        //        Vector3 v_turretRotationAsEuler = v_Engine.v_Turret.eulerAngles;
+        //        Debug.Log(v_turretRotationAsEuler.y
+        //        Quaternion v_TurretRotAsQuaternion = Quaternion.Euler(0, 0, v_turretRotationAsEuler.y * -1);
+        //        Mathf.LerpAngle(v_turretRotationAsEuler.x,v_turretRotationAsEuler.y,v_turretRotationAsEuler.z);
 
+        // Update SPEED:
+        // Get current speed:
+//        float v_CurrentSpeed = v_Engine.v_EngineRigidbody.velocity.magnitude * 2.2369362912f;
+        GUI_CurrentSpeed.text = v_Engine.v_CurrentSpeed.ToString("00");
+
+        // Update GEARS:
+        if(v_Engine.v_Reversing == true) {
+            GUI_CurrentGear.text = "REV | " +v_Engine.v_Gear.ToString();
+        } else if(v_Engine.v_Gear == 0){
+            GUI_CurrentGear.text = "N";
+        }else{
+            GUI_CurrentGear.text = v_Engine.v_Gear.ToString();
+        }
+
+        // Update BRAKE:
+        if(v_Engine.v_Braking == true) {
+            GUI_Brakes.color = new Color(1,1,1);
+        } else{ GUI_Brakes.color = new Color(1,1,1,0.25f); }
 
     } // END - Update Panels.
 

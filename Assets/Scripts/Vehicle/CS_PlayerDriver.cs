@@ -44,8 +44,9 @@ public class CS_PlayerDriver : MonoBehaviour {
 
     void FixedUpdate(){
         if (Engine.v_EngineEnabled){
-            PlayerForward();
+
             } // END -- Engine Enabled Only functions.
+        PlayerGearChange();
         PlayerSteer();
         PlayerBrake();
         PlayerTurretRotation();
@@ -67,6 +68,15 @@ public class CS_PlayerDriver : MonoBehaviour {
         float v_analogueInputValue = Input.GetAxis("P1_Brake");
         Engine.ApplyBraking(v_analogueInputValue);
     } // END - Player brake input.
+
+
+    void PlayerGearChange() {
+        if (Input.GetButtonDown("P1_Gears")) {
+            int v_DigitalInputValue = (int) Input.GetAxis("P1_Gears");
+            Engine.ChangeGear(v_DigitalInputValue);
+        }
+    }
+
 
     void PlayerTurretRotation() {
 //        Debug.Log(Input.mousePosition.x);
