@@ -9,6 +9,7 @@ OVERVIEW:  References player input used for: driving, braking and steering.
 
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class CS_AIDriver : MonoBehaviour
 {
@@ -39,6 +40,8 @@ public class CS_AIDriver : MonoBehaviour
 	private GameObject Player;
 	private Vector3 currentPosition;
 	private float v_Steer = 0.0f;
+    public Transform v_playerTracker;
+    GameObject v_playerTrackerObject;
 
 //	private BrakeCondition v_BrakeCondition = BrakeCondition.TargetDistance;		Temp
 
@@ -53,11 +56,14 @@ public class CS_AIDriver : MonoBehaviour
 		Player.GetComponent<Transform>();
 		CurrentTarget = Player;
 
+        v_playerTrackerObject = GameObject.Find("Tracker");
+
 
     } // END - Start
 
     void Update()
     {
+        v_playerTrackerObject.transform.LookAt(v_playerTracker);
 //        PlayerChangeMode();
     }
 
@@ -71,12 +77,20 @@ public class CS_AIDriver : MonoBehaviour
         //PlayerBrake();
         //PlayerTurretRotation();
         //PlayerGunElevation();
+        AISteering();
     } // END - Fixed Update.
 
+    public void AISteering()
+    {
+        float differenceAngle = Mathf.DeltaAngle(transform.rotation.y, v_playerTracker.transform.rotation.y);
+        float steerAmount = Mathf.Clamp(differenceAngle/WheelManager.v_Steering,-1,1);
+        Engine.Steering(steerAmount);
+    }
 
     void AIForward()
     {
-		
+   //     Engine.Acceleration(0.1f);
+   //     Engine.ChangeGear(1);
         //float v_analogueInputValue = Input.GetAxis("P1_Acceleration");
 
     } // END - Player forward input.
