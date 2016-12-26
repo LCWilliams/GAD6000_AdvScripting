@@ -26,9 +26,11 @@ public class CS_VehicleEngine : MonoBehaviour {
     [Header("Gears & Speed")][Space(10)]
     public float v_MaximumSpeed; // The max speed the vehicle is able to reach.
     float v_GearLimitedSpeed; // The max speed the vehicle is able to reach based upon its current gear.
+    float v_TorqueStep; // A single step in torque between gears.
+    float v_SpeedStep; // A single step in speed between gears.
     public float v_CurrentSpeed;
     public float v_MaximumTorque; // Max amount of torque the vehicle is capable of producing.
-    public float v_torqueToApply = 0;
+    float v_torqueToApply = 0;
     public float v_TorqueLerpTime; // Used to prevent the player from going full speed quickly using only gear 5.
     float v_GearLimitedTorque; // Max torque the vehicle is able to produce based upon its current gear.
     [Tooltip("The amount of torque the wheels have when the engine is DISABLED")]public float v_WheelBrakeTorque;
@@ -72,6 +74,9 @@ public class CS_VehicleEngine : MonoBehaviour {
         v_EngineRigidbody = GetComponent<Rigidbody>();
         v_WheelManager = GetComponent<CS_WheelManager>();
         v_EngineRigidbody.centerOfMass = v_CenterofMass.localPosition; // Debug.Log(this.transform.GetComponent<Rigidbody>().centerOfMass);
+        v_TorqueStep = v_MaximumTorque / v_MaxGears;
+        v_SpeedStep = v_MaximumSpeed / v_MaxGears;
+        Debug.Log(v_TorqueStep + " " + v_SpeedStep);
     }
 
     // Use this for initialization
@@ -158,10 +163,10 @@ public class CS_VehicleEngine : MonoBehaviour {
 
         if(v_CurrentSpeed <= 1) { // REQUIRED TO ENABLE VEHICLE TO MOVE FROM STANDSTILL.
             v_TorqueLerpTime =  p_accelerationAmmount;
-            v_torqueToApply = (v_MaximumTorque / v_MaxGears) * v_TorqueLerpTime;
+            v_torqueToApply = v_MaximumTorque * v_TorqueLerpTime;
         } else {
-            v_TorqueLerpTime = Mathf.Clamp01((v_CurrentSpeed / (v_GearLimitedSpeed * 0.5f)) * p_accelerationAmmount);
-            v_torqueToApply = v_GearLimitedTorque * v_TorqueLerpTime;
+            v_TorqueLerpTime = Mathf.Clamp01((v_CurrentSpeed / v_GearLimitedSpeed) * (p_accelerationAmmount * GearEfficiency()));
+            v_torqueToApply = Mathf.Lerp(0, v_GearLimitedTorque, v_TorqueLerpTime * 2);
         }
 
         // SET reverse flag if input dictates reverse action.
@@ -190,6 +195,18 @@ public class CS_VehicleEngine : MonoBehaviour {
         } // END - Power to Rear.
 
     } // END - Acceleration.
+
+    // Returns the current efficiency of the gear selection as a range of 0-1, to be used as a multiplier.
+    float GearEfficiency() {
+        float v_GearEfficiencyLow = v_CurrentSpeed / ((v_GearLimitedSpeed) - (v_SpeedStep * 1f));
+        float v_GearEfficiencyHigh = v_CurrentSpeed / (v_GearLimitedSpeed + (v_SpeedStep));
+        // Create the end value- compare both, devide by desired medium, then clamp:
+        float v_GearEfficiency = Mathf.Clamp((v_GearEfficiencyLow + v_GearEfficiencyHigh), 0, 1);
+
+        Debug.Log(v_GearEfficiency +" L: " +v_GearEfficiencyLow +" H: " +v_GearEfficiencyHigh);
+
+        return v_GearEfficiency;
+    } // END - gear efficiency.
 
 
     public void Steering(float p_steerInput) {
@@ -284,7 +301,7 @@ public class CS_VehicleEngine : MonoBehaviour {
     public void ChangeGear(int p_GearChange) {
         v_Gear = Mathf.Clamp((v_Gear + p_GearChange), 0, v_MaxGears);
         v_GearLimitedSpeed = (v_MaximumSpeed / v_MaxGears) * v_Gear;
-        v_GearLimitedTorque = (v_MaximumTorque / v_MaxGears) * v_Gear;
+        v_GearLimitedTorque = v_TorqueStep * v_Gear;
 
         Debug.Log("GEAR: " + v_Gear +"| LimitedSpeed: " +v_GearLimitedSpeed +"| Limited Torque: " +v_GearLimitedTorque);
         

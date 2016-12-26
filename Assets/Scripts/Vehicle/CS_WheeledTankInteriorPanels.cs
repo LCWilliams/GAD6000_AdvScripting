@@ -26,10 +26,13 @@ public class CS_WheeledTankInteriorPanels : MonoBehaviour {
     public Image GUI_TankBase;
     public RectTransform GUI_TankTurret;
     public Text GUI_CurrentGear;
+    public Image GUI_CurrentSpeedImage;
     public Text GUI_CurrentSpeed;
     public Text GUI_Brakes;
 
     [Header("VisualEffects")] [Space(10)]
+    public float v_UpdateTime; // How long it takes to update lerped values.
+    public float v_CurrentUpdateTime; // The current value.
     [Range(100, 5000)]public int v_SparkEmitterMaxRate;
     [Range(0.5f, 0.95f)][Tooltip("Sparks will only begin to start when efficiency goes BELOW this number")]public float v_SparksAtEfficiency;
     [Range(1, 100)][Tooltip("Rate deduction per frame of spark emitter.")]public int v_SparkEmitterRateDecrease;
@@ -52,6 +55,14 @@ public class CS_WheeledTankInteriorPanels : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        if(v_CurrentUpdateTime >= v_UpdateTime) {
+            v_CurrentUpdateTime = 0;
+        } else{
+            v_CurrentUpdateTime = v_CurrentUpdateTime + 0.05f;
+        }
+
+
         SparkEmitter_Decrease();
         bool DeficiencyBlock0 = Random.Range(-1f, v_Engine.v_GUIUpdateThreshold) > v_Engine.v_Efficiency;
         bool DeficiencyBlock1 = Random.Range(-1f, v_Engine.v_GUIUpdateThreshold) > v_Engine.v_Efficiency;
@@ -70,20 +81,13 @@ public class CS_WheeledTankInteriorPanels : MonoBehaviour {
     void UpdatePanels() {
         // Update GUI tank turret rotation: copy current turet BONE rotation and apply directly.
         GUI_TankTurret.localRotation = Quaternion.Euler(v_Engine.v_Turret.transform.localEulerAngles);
-        // PREVIOUS ATTEMPTS:
-        //        Vector3 v_turretRotationAsEuler = v_Engine.v_Turret.eulerAngles;
-        //        Debug.Log(v_turretRotationAsEuler.y
-        //        Quaternion v_TurretRotAsQuaternion = Quaternion.Euler(0, 0, v_turretRotationAsEuler.y * -1);
-        //        Mathf.LerpAngle(v_turretRotationAsEuler.x,v_turretRotationAsEuler.y,v_turretRotationAsEuler.z);
 
-        // Update SPEED:
-        // Get current speed:
-//        float v_CurrentSpeed = v_Engine.v_EngineRigidbody.velocity.magnitude * 2.2369362912f;
         GUI_CurrentSpeed.text = v_Engine.v_CurrentSpeed.ToString("00");
+        GUI_CurrentSpeedImage.fillAmount = Mathf.Lerp(0.01f, 1, v_Engine.v_TorqueLerpTime);
 
         // Update GEARS:
-        if(v_Engine.v_Reversing == true) {
-            GUI_CurrentGear.text = "REV | " +v_Engine.v_Gear.ToString();
+        if (v_Engine.v_Reversing == true) {
+            GUI_CurrentGear.text = "REV";
         } else if(v_Engine.v_Gear == 0){
             GUI_CurrentGear.text = "N";
         }else{
