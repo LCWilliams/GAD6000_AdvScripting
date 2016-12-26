@@ -89,8 +89,8 @@ public class CS_AIDriver : MonoBehaviour
 
     void AIForward()
     {
-   //     Engine.Acceleration(0.1f);
-   //     Engine.ChangeGear(1);
+        Engine.Acceleration(1);
+        Engine.ChangeGear(1);
         //float v_analogueInputValue = Input.GetAxis("P1_Acceleration");
 
     } // END - Player forward input.
