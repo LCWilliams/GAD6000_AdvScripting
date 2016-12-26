@@ -86,7 +86,7 @@ public class CS_WheeledTankInteriorPanels : MonoBehaviour {
         GUI_CurrentSpeedImage.fillAmount = Mathf.Lerp(0.01f, 1, v_Engine.v_TorqueLerpTime);
 
         // Update GEARS:
-        if (v_Engine.v_Reversing == true) {
+        if (v_Engine.v_Reversing == true && v_Engine.v_Gear != 0) {
             GUI_CurrentGear.text = "REV";
         } else if(v_Engine.v_Gear == 0){
             GUI_CurrentGear.text = "N";

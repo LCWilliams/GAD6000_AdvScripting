@@ -29,6 +29,7 @@ public class CS_BasicTrackTo_00 : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        go_ItemToRotate.transform.LookAt(go_PlayerCamera.transform);
+        //        go_ItemToRotate.transform.LookAt(go_PlayerCamera.transform.position);
+        transform.rotation = Quaternion.LookRotation(transform.position - go_PlayerCamera.transform.position);
 	}
 }
