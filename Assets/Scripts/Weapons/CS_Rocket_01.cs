@@ -26,8 +26,9 @@ public class CS_Rocket_01 : MonoBehaviour
     Stopwatch v_FlightTime; // How long the rocket has been in flight for.
     [Tooltip("Higher speeds will result in less accurate rockets")][Range(0.1f, 1)]public float v_FlightSpeed;
     [Tooltip("How long the rocket will fly straight before initiating persuit: IN MILLISECONDS")]public int v_ClearanceTime;
-    [Tooltip("How long the rockets will take to line up: Lower values result in sharper turns, and vice versa.")][Range(0.1f, 1)]public float v_AimTime;
+    [Tooltip("How long the rockets will take to line up: Lower values result in sharper turns, and vice versa.")][Range(0.1f, 10)]public float v_AimTime;
     float v_CurrentAimTime; // How long the missile has currently spent aiming.
+    [Range(0.01f, 0.5f)] public float v_AimTimeMultiplier;
     Quaternion v_InitialRotation;
 
     // Objects:
@@ -56,7 +57,7 @@ public class CS_Rocket_01 : MonoBehaviour
 
     } // END - Update.
 
-    void FixedUpdate() {
+    void LateUpdate() {
         // CLEARENCE TIME: Prevents rocket from tracking immediately.
         if (v_FlightTime.ElapsedMilliseconds >= v_ClearanceTime){
             Tracking();
@@ -74,11 +75,13 @@ public class CS_Rocket_01 : MonoBehaviour
     // ------------------------------------------------------------------------------------------------------
 
     void Tracking() {
-        v_CurrentAimTime += Mathf.Clamp(((0.1f * Time.deltaTime / v_AimTime)), 0, 1);
-        if(v_CurrentAimTime >= v_AimTime) {
+        v_CurrentAimTime += Mathf.Clamp(((v_AimTimeMultiplier * Time.deltaTime / v_AimTime)), 0, 1);
+
+        if (v_CurrentAimTime >= v_AimTime) {
             v_CurrentAimTime = 0;
             v_InitialRotation = transform.rotation;
         } // END - End of aim time.
+
         Quaternion v_TargetToAim = Quaternion.Lerp(v_InitialRotation, v_Tracker.transform.rotation, v_CurrentAimTime);
         this.transform.rotation = v_TargetToAim;
 

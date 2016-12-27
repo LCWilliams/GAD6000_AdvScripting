@@ -39,6 +39,12 @@ public class CS_PlayerDriver : MonoBehaviour {
         if (Engine.v_EngineEnabled){
             PlayerChangeMode();
             PlayerForward();
+
+            PlayerGearChange();
+            PlayerSteer();
+            PlayerBrake();
+            PlayerTurretRotation();
+            PlayerGunElevation();
         } // END -- Engine Enabled Only functions.
     }
 
@@ -46,11 +52,7 @@ public class CS_PlayerDriver : MonoBehaviour {
         if (Engine.v_EngineEnabled){
 
             } // END -- Engine Enabled Only functions.
-        PlayerGearChange();
-        PlayerSteer();
-        PlayerBrake();
-        PlayerTurretRotation();
-        PlayerGunElevation();
+
     } // END - Fixed Update.
 
 

@@ -276,6 +276,7 @@ ModelImporter:
     7400000: VehicleBone|Gun_StandardShot
     7400002: VehicleBone|TankIdle
     7400004: VehicleBone|Idle
+    7400006: VehicleBone|Gun_StandardShot.001
     9500000: //RootNode
     11100000: //RootNode
     13700000: SKM_Vehicle
@@ -304,7 +305,7 @@ ModelImporter:
       name: VehicleBone|Gun_StandardShot
       takeName: VehicleBone|Gun_StandardShot
       firstFrame: 0
-      lastFrame: 50
+      lastFrame: 29
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

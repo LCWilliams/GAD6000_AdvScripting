@@ -1,0 +1,190 @@
+fileFormatVersion: 2
+guid: 22057dbbeadb8194398e6d0c39f37993
+timeCreated: 1482811777
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Gun
+    100004: GunCharger
+    100006: Plane
+    100008: Turret
+    100010: VehicleBody
+    100012: WheeledTank_01_VehicleBone
+    100014: SkM_WheeledTank_01
+    100016: VehicleBone
+    400000: //RootNode
+    400002: Gun
+    400004: GunCharger
+    400006: Plane
+    400008: Turret
+    400010: VehicleBody
+    400012: WheeledTank_01_VehicleBone
+    400014: SkM_WheeledTank_01
+    400016: VehicleBone
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Plane
+    4300002: SkM_WheeledTank_01
+    7400000: Plane|Gun_StandardShot
+    7400002: Plane|Idle
+    7400004: WheeledTank_01_VehicleBone|Gun_StandardShot
+    7400006: WheeledTank_01_VehicleBone|Gun_StandardShot.001
+    7400008: WheeledTank_01_VehicleBone|Idle
+    7400010: SkM_WheeledTank_01|Gun_StandardShot
+    7400012: SkM_WheeledTank_01|Idle
+    7400014: VehicleBone|Gun_StandardShot
+    7400016: VehicleBone|Idle
+    9500000: //RootNode
+    13700000: Plane
+    13700002: SkM_WheeledTank_01
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 0
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: VehicleBone|Gun_StandardShot
+      takeName: VehicleBone|Gun_StandardShot
+      firstFrame: 0
+      lastFrame: 29
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: SkM_WheeledTank_01
+        weight: 0
+      - path: VehicleBone
+        weight: 0
+      - path: VehicleBone/VehicleBody
+        weight: 0
+      - path: VehicleBone/VehicleBody/Turret
+        weight: 0
+      - path: VehicleBone/VehicleBody/Turret/Gun
+        weight: 0
+      - path: VehicleBone/VehicleBody/Turret/Gun/GunCharger
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: VehicleBone|Idle
+      takeName: VehicleBone|Idle
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: SkM_WheeledTank_01
+        weight: 0
+      - path: VehicleBone
+        weight: 0
+      - path: VehicleBone/VehicleBody
+        weight: 0
+      - path: VehicleBone/VehicleBody/Turret
+        weight: 0
+      - path: VehicleBone/VehicleBody/Turret/Gun
+        weight: 0
+      - path: VehicleBone/VehicleBody/Turret/Gun/GunCharger
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 1
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: VehicleBone
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: be90f62c84c21844190ee164be723841,
+    type: 3}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

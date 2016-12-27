@@ -14,6 +14,7 @@ public class CS_GunShell_Basic : MonoBehaviour {
     [Header("Shell Characteristics:")]
     public int v_ShellLifetime;
     public float v_ShellPropulsionForce;
+    WindZone go_TravelWind; // Will find gameobject named "TravelWind" if not set manually.
     [Header("Bounce:")]
     [Tooltip("Will explode on contact if false")]public bool v_AllowBounce;
     public int v_BouncesAllowed;
@@ -29,6 +30,7 @@ public class CS_GunShell_Basic : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         Destroy(this.gameObject, v_ShellLifetime);
+        if(go_TravelWind == null) { go_TravelWind = transform.GetComponentInChildren<WindZone>(); }
 
         v_Exploded = false;
         if (v_ExplosionEffects == null) { v_ExplosionEffects = GameObject.Find("ExplosionEffects"); }
@@ -54,13 +56,14 @@ public class CS_GunShell_Basic : MonoBehaviour {
             if(v_Exploded){
                 int v_AliveParticlesInExplosion = v_ExplosionEffects.GetComponentInChildren<ParticleSystem>().particleCount;
                 if ( v_AliveParticlesInExplosion == 0) { // DESTROY on no particles left.
-                    Destroy(this.gameObject);
+                    Destroy(this.gameObject, 2f);
                 } // END - If no particles alive; destroy object.
             } // END - if exploded is true.
         } // END - Update.
 
     void ShellExplode(float p_damage, float p_radius){
         v_Exploded = true;
+        go_TravelWind.windMain = 0;
         this.GetComponent<Rigidbody>().isKinematic = true;
         Destroy(this.GetComponent<MeshRenderer>());
         v_ExplosionEffects.SetActive(true);
