@@ -17,4 +17,24 @@ public class PlayScript : MonoBehaviour {
     {
         SceneManager.LoadScene("L_Menu_Main");
     }
+
+    public void Menu()
+    {
+        SceneManager.LoadScene("Menu");
+    }
+
+    public void Credits()
+    {
+        SceneManager.LoadScene("Credits");
+    }
+
+    public void GoldCar()
+    {
+        SceneManager.LoadScene("L_TestEnvironment");
+    }
+
+    public void GreyCar()
+    {
+        SceneManager.LoadScene("L_Menu_Main");
+    }
 }
