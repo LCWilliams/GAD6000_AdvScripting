@@ -35,6 +35,13 @@ public class PlayScript : MonoBehaviour {
 
     public void GreyCar()
     {
+
         SceneManager.LoadScene("L_Menu_Main");
+    }
+
+    public void CarSelect()
+    {
+
+        SceneManager.LoadScene("CarSelect");
     }
 }
