@@ -156,24 +156,46 @@ public class CS_VehicleEngine : MonoBehaviour {
             as_EngineAudioSource.pitch = (Mathf.Lerp(as_EngineAudioSource.pitch, 1, 0.1f));
         } // END - Engine audio pitch.
 
-        // LIMIT SPEED:  Used over clamps to allow the vehicle to travel faster in the event of going downhill.
-        if (v_CurrentSpeed > v_GearLimitedSpeed){
-            v_torqueToApply = 0;
-        } else // END - Prevent torque application if speed is greater than MAX
+        /*-------------------------------------------------------------------------------------------------------
+        ---------------------------------------------------------------------------------------------------------
+         CALCULATE TORQUE TO APPLY:
+         The following section is used to create a TorqueLerp value, used to lerp between 0 and the torque allowed by the current gear selected
+         In order to create a system similar to those of actual vehiclular gear systems, the torque is reversed:  Gear 1 has maximum torque.
+         The maximum value of the lerp:  Torque Steps are added to the maximum torque:  this is required to prevent a torque value of 0 being applied at maximum gear.
+         This value is then subtracted against the current gear multiplied gearSteps.
+            
+        TorqueLerp is calculated by dividing the current speed by the current gear maximum allowed speed, then multiplied against acceleration input & gear efficiency.
+        */
 
-        if(v_CurrentSpeed <= 1) { // REQUIRED TO ENABLE VEHICLE TO MOVE FROM STANDSTILL.
-            v_TorqueLerpTime =  p_accelerationAmmount;
-            v_torqueToApply = v_MaximumTorque * v_TorqueLerpTime;
+        // The first IF statement is required in order to allow the vehicle to move from a standstil.
+        if (v_CurrentSpeed <= 1 && v_Reversing == false) {
+            v_torqueToApply = v_MaximumTorque * p_accelerationAmmount; // A basic torque-input multiplication is used until the vehicle has reached a speed of 1.
+
         } else {
             v_TorqueLerpTime = Mathf.Clamp01((v_CurrentSpeed / v_GearLimitedSpeed) * (p_accelerationAmmount * GearEfficiency()));
-            v_torqueToApply = Mathf.Lerp(0, v_GearLimitedTorque, v_TorqueLerpTime * 2);
-        }
+            v_torqueToApply = Mathf.Lerp(0, ((v_MaximumTorque + (v_TorqueStep * 2) ) - (v_TorqueStep * v_Gear)), v_TorqueLerpTime);
+        } // END - Standard Torque calculation.
 
-        // SET reverse flag if input dictates reverse action.
-        if(p_accelerationAmmount < 0) {
+        // REVERSE:
+        if(p_accelerationAmmount < 0 && v_Gear > 0) {
             v_Reversing = true;
+
+            // As "v_CurrentSpeed" never goes into minus numbers, the following if Statement is required again:
+            if(v_CurrentSpeed < v_SpeedStep) { 
+             v_TorqueLerpTime = p_accelerationAmmount;
+                v_torqueToApply = ((v_MaximumTorque + (v_TorqueStep * 2) - (v_TorqueStep * 1))) * v_TorqueLerpTime;
+            } // END - If current speed LESS than single gear speed step.
+
+            // Set Reverse flag to false:
         } else { v_Reversing = false; }
 
+        // LIMIT SPEED:  Used over clamps to allow the vehicle to travel faster in the event of going downhill.
+        if (v_CurrentSpeed > v_GearLimitedSpeed || v_CurrentSpeed > v_MaximumSpeed){
+            v_torqueToApply = 0;
+        } // END - Prevent torque application if speed is greater than MAX
+
+
+        // RECURSIVE:  Apply torque to wheels if their "power to ___" is true.
         if (v_WheelManager.v_PowerToFront) {
             // Apply acceleration to front wheels.
             for (int frontWheelIndex = 0; frontWheelIndex < v_WheelManager.v_WheelsFront.Length; frontWheelIndex++) {
@@ -195,18 +217,6 @@ public class CS_VehicleEngine : MonoBehaviour {
         } // END - Power to Rear.
 
     } // END - Acceleration.
-
-    // Returns the current efficiency of the gear selection as a range of 0-1, to be used as a multiplier.
-    float GearEfficiency() {
-        float v_GearEfficiencyLow = v_CurrentSpeed / ((v_GearLimitedSpeed) - (v_SpeedStep * 1f));
-        float v_GearEfficiencyHigh = v_CurrentSpeed / (v_GearLimitedSpeed + (v_SpeedStep));
-        // Create the end value- compare both, devide by desired medium, then clamp:
-        float v_GearEfficiency = Mathf.Clamp((v_GearEfficiencyLow + v_GearEfficiencyHigh), 0, 1);
-
-        Debug.Log(v_GearEfficiency +" L: " +v_GearEfficiencyLow +" H: " +v_GearEfficiencyHigh);
-
-        return v_GearEfficiency;
-    } // END - gear efficiency.
 
 
     public void Steering(float p_steerInput) {
@@ -261,7 +271,21 @@ public class CS_VehicleEngine : MonoBehaviour {
         } // END - Brakes to Rear.
     } // END - Braking.
 
+    // Returns the current efficiency of the gear selection as a range of 0-1, to be used as a multiplier.
+    float GearEfficiency() {
+        float v_GearEfficiencyLow = v_CurrentSpeed / ((v_GearLimitedSpeed) - (v_SpeedStep * 1f));
+        float v_GearEfficiencyHigh = v_CurrentSpeed / (v_GearLimitedSpeed + (v_SpeedStep));
+        // Create the end value- compare both, devide by desired medium, then clamp:
+        float v_GearEfficiency = Mathf.Clamp((v_GearEfficiencyLow + v_GearEfficiencyHigh), 0, 1);
+
+        // Debug.Log(v_GearEfficiency +" L: " +v_GearEfficiencyLow +" H: " +v_GearEfficiencyHigh);
+
+        return v_GearEfficiency;
+    } // END - gear efficiency.
+
+    
     // ---------------------------------------------------------------------------------------------------------
+
 
     public void TurretRotation(float p_Direction) {
         v_Turret.Rotate(0, 0, (-p_Direction * v_TurretTraverseSpeed) * v_Efficiency);

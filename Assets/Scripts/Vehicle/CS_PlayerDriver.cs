@@ -19,12 +19,14 @@ public class CS_PlayerDriver : MonoBehaviour {
     CS_WheeledTankInteriorPanels v_InteriorPanels; // Player UI elements.
     CS_WheeledTankWeapons_00 v_TankWeapons; // player weapon scripts.
     // Components:
-    public GameObject v_PlayerCamera;
-    int v_CurrentCamera;
-    public Transform[] v_CameraPositions;
+    [Header("CAMERAS: ")][Space(10)]
+    [Tooltip("The players camera/head.")][Header("CAM0: Player Internal:")]public GameObject v_PlayerCamera;
+    [Tooltip("The VIEWPORT camera- located at the front of the vehicle.")][Header("CAM1: Viewport:")] public GameObject v_ViewportCamera;
+    [Tooltip("The GUN camera: ideally somewhere that makes sense and will aim with the gun.")][Header("CAM2: Viewport:")] public GameObject v_GunCamera;
+    int v_CurrentCamera; // Which camera is currently active.
     [Tooltip("Pixels from center that should count as a deadzone")]
-    [Range(0.1f,0.3f)] public float v_TurretInputDeadZone;
-    [Range(0.1f, 0.3f)] public float v_GunElevationInputDeadzone;
+    [Range(0.01f,0.3f)] public float v_TurretInputDeadZone;
+    [Range(0.01f, 0.3f)] public float v_GunElevationInputDeadzone;
 
     void Start () {
         // Get components:
@@ -116,7 +118,7 @@ public class CS_PlayerDriver : MonoBehaviour {
     } // END - Player gun elevation.
 
     void PlayerChangeMode() {
-        if(Input.GetKeyDown("mouse 1")) {
+        if(Input.GetButtonDown("P1_SwapCamera")) {
         v_InteriorPanels.SwapMainScreen();
         //    v_CurrentCamera++;
         //    if(v_CurrentCamera == v_CameraPositions.Length) { v_CurrentCamera = 0; }

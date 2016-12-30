@@ -87,7 +87,7 @@ public class CS_WheeledTankInteriorPanels : MonoBehaviour {
 
         // Update GEARS:
         if (v_Engine.v_Reversing == true && v_Engine.v_Gear != 0) {
-            GUI_CurrentGear.text = "REV";
+            GUI_CurrentGear.text = "R↓";
         } else if(v_Engine.v_Gear == 0){
             GUI_CurrentGear.text = "N";
         }else{

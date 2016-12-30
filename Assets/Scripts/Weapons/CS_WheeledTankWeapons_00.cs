@@ -18,11 +18,14 @@ public class CS_WheeledTankWeapons_00 : MonoBehaviour {
     public GameObject go_Turret;
     public Transform[] go_RocketPods;
 
-    [Header("Shell Prefabs")] [Space(10)]
+    [Header("Shell Prefabs:")] [Space(10)]
     public GameObject go_Shell;
     public GameObject go_Rocket;
 
-    [Header("Audio")][Space(10)]
+    [Header("Cooldowns:")][Space(10)]
+    public float v_RocketCooldown;
+
+    [Header("Audio:")][Space(10)]
     public AudioSource as_MainGunAudio;
     public AudioClip ac_StandardShot;
 
@@ -56,6 +59,9 @@ public class CS_WheeledTankWeapons_00 : MonoBehaviour {
     } // END - Fire main (charged).
 
     public void FireRockets(Transform p_Target) {
+        if(v_RocketCooldown > 0) {
+
+        } // END - Rocket cooldown.
 
     } // END - Fire Rockets.
 
