@@ -31,8 +31,6 @@ public class CS_WheeledTankWeapons_00 : MonoBehaviour {
 
     //MISC:
     public Animator v_TankAnimation;
-    int v_IdleStateHash = Animator.StringToHash("DefaultLayer.VehicleBone|TankIdle");
-
     // END - Variables.
 
     void Start() {

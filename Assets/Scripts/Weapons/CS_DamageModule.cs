@@ -54,7 +54,7 @@ public class CS_DamageModule : MonoBehaviour {
         } // END - If Use Mass
 
         // Debug Warn if all multipliers are 0.
-        if(v_KineticMultiplier == 0 && v_ExplosionMultiplier == 0 && v_PlasmaMultiplier == 0) { Debug.LogWarning("WARNING! " + this.gameObject +" Is Immune to ALL types of damage!"); }
+        if(v_KineticMultiplier == 0 && v_ExplosionMultiplier == 0 && v_PlasmaMultiplier == 0) { Debug.LogError("WARNING! " + this.gameObject +" Is Immune to ALL types of damage!"); }
     } // END - Awake.
 	
 	// Update is called once per frame

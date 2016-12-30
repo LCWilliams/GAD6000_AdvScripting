@@ -15,7 +15,6 @@ public class CS_PlayerDriver : MonoBehaviour {
     public int v_PlayerIndex;
     //Scripts:
     CS_VehicleEngine Engine; // Engine script attached to this vehicle.
-    CS_WheelManager WheelManager; // Wheel management script attached to this vehicle.
     CS_WheeledTankInteriorPanels v_InteriorPanels; // Player UI elements.
     CS_WheeledTankWeapons_00 v_TankWeapons; // player weapon scripts.
     // Components:
@@ -31,7 +30,6 @@ public class CS_PlayerDriver : MonoBehaviour {
     void Start () {
         // Get components:
         Engine = GetComponent<CS_VehicleEngine>();
-        WheelManager = GetComponent<CS_WheelManager>();
         v_InteriorPanels = GetComponent<CS_WheeledTankInteriorPanels>();
         v_TankWeapons = GetComponent<CS_WheeledTankWeapons_00>();
     } // END - Start
