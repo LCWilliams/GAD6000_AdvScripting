@@ -39,7 +39,7 @@ public class CS_AIDriver : MonoBehaviour
 	public GameObject CurrentTarget;
 	private GameObject Player;
 	private Vector3 currentPosition;
-	private float v_Steer = 0.0f;
+//	private float v_Steer = 0.0f;
     public Transform v_playerTracker;
     GameObject v_playerTrackerObject;
 

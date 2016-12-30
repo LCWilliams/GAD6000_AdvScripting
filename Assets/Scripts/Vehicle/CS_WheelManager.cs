@@ -3,7 +3,7 @@ AUTHOR(S): LEE WILLIAMS		DATE: 10/2016 - 01/2017
 EDITOR(S): SCOTT ANDERS
 SCRIPT HOLDERS: PF_PlayerVehicle
 INBOUND REFERENCES: CS_PlayerDriver | ((AIDriver))
-OUTBOUND REFERENCES: CS_VehicleEngine
+OUTBOUND REFERENCES: null.
 */
 
 using UnityEngine;
@@ -13,8 +13,6 @@ public class CS_WheelManager : MonoBehaviour {
     //Numural.
     public int v_TotalWheels;
     public float v_Steering;
-    //Scripts:
-    CS_VehicleEngine Engine; // Engine script attached to this vehicle.
 
     //Wheel Configuration Arrays.
     [Header("Front Wheels")]
@@ -37,7 +35,6 @@ public class CS_WheelManager : MonoBehaviour {
 
     // Use this for initialization
 	void Start () {
-        Engine = GetComponent<CS_VehicleEngine>();
         v_TotalWheels = (v_WheelsFront.Length + v_WheelsMid.Length + v_WheelsRear.Length);
 	} // END - Start
 	

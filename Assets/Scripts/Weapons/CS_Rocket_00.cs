@@ -87,7 +87,7 @@ public class CS_Rocket_00 : MonoBehaviour {
 
         v_TargetNewPosition = v_Target.position;
         //        v_ClearanceTime
-        Vector3 v_lookAtTarget = Vector3.Lerp(v_InitialPosition, v_TargetNewPosition, v_CurrentCorrection);
+//        Vector3 v_lookAtTarget = Vector3.Lerp(v_InitialPosition, v_TargetNewPosition, v_CurrentCorrection);
 //        Quaternion v_TargetRotAsQuat = 
 //        this.transform.rotation = v_lookAtTarget;
 

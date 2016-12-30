@@ -37,6 +37,7 @@ public class CS_Rocket_01 : MonoBehaviour
     public float v_PlasmaDamage;
     public float v_PlasmaDamageOverTime;
     public float v_PlasmaEffectDuration;
+    public GameObject go_PlasmaExplosion;
 
     [Space(10)]
 

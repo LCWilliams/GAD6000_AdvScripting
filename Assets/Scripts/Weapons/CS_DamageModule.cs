@@ -25,7 +25,7 @@ public class CS_DamageModule : MonoBehaviour {
     [Header("MASS SETTINGS:")]
     [Tooltip("If true, the module will use the mass as 'health'.  \nREQUIRES RIGIDBODY!")]public bool v_UseMass;
     [Tooltip("If true, mass will decrease from damage.")] public bool v_AffectsMass;
-    [Tooltip("The minimum amount of mass until the holder is declared destroyed. (Multiplier: from initial mass). \n\nLower number equates to higher damage taking")][Range(0.1f, 0.9f)] public float v_MinMassMultiplier = 0.1f;
+    [Tooltip("MULTIPLIED AGAINST INITIAL MASS! \nDamage taken reduces mass. \nWhen the mass of the object has lost the amount (result of this value), it is destroyed. \n\nLOWER VALUES RESULTS IN LESS DAMAGE SUSTAINABILITY.")][Range(0.1f, 0.9f)] public float v_MinMassMultiplier = 0.1f;
     float v_MinimumMass; // The calculated minimum mass value.
     Rigidbody v_Rigidbody;
     [Space(15)]
@@ -36,12 +36,9 @@ public class CS_DamageModule : MonoBehaviour {
     float v_PlasmaSubDamage; // How much damage to apply.
     [Space(15)]
     [Header("DAMAGE MODIFIER SETTINGS:")]
-    [Tooltip("Module will take increased damage from KINETIC/IMPACT weapons")] public bool v_KineticWeakness;
-    [Range(1.2f, 3)] public float v_KineticMultiplier = 1.2f;
-    [Tooltip("Module will take increased damage from EXPLOSION weapons")] public bool v_ExplosionWeakness;
-    [Range(1.2f, 3)] public float v_ExplosionMultiplier = 1.2f;
-    [Tooltip("Module will take increased damage from PLASMA weapons")]public bool v_PlasmaWeakness;
-    [Range(1.2f, 3)] public float v_PlasmaMultiplier = 1.2f;
+    [Tooltip("Values below 1 will reduce damage.  Values above 1 increase damage \n0 Makes the object immune from this damage type!")][Range(0, 3)] public float v_KineticMultiplier = 1;
+    [Tooltip("Values below 1 will reduce damage.  Values above 1 increase damage \n0 Makes the object immune from this damage type!")][Range(0, 3)] public float v_ExplosionMultiplier = 1;
+    [Tooltip("Values below 1 will reduce damage.  Values above 1 increase damage \n0 Makes the object immune from this damage type!")][Range(0, 3)] public float v_PlasmaMultiplier = 1;
     // END - Variables.
 
     // Use this for initialization
@@ -55,6 +52,9 @@ public class CS_DamageModule : MonoBehaviour {
             } // END - If rigidbody = NULL.
             v_MinimumMass = v_Rigidbody.mass * v_MinMassMultiplier;
         } // END - If Use Mass
+
+        // Debug Warn if all multipliers are 0.
+        if(v_KineticMultiplier == 0 && v_ExplosionMultiplier == 0 && v_PlasmaMultiplier == 0) { Debug.LogWarning("WARNING! " + this.gameObject +" Is Immune to ALL types of damage!"); }
     } // END - Awake.
 	
 	// Update is called once per frame
@@ -67,10 +67,10 @@ public class CS_DamageModule : MonoBehaviour {
     } // END - Late Update.
 
     public void ApplyKineticDamage(float p_DamageToApply) {
-        if (v_KineticWeakness) { // IF Kinetic weakness is true, multiply by specified value.
-            v_DamageSustained += p_DamageToApply * v_KineticMultiplier;
-        }// END - Weakness modified damage.
-        else { v_DamageSustained += p_DamageToApply; } // STANDARD APPLY        
+        v_DamageSustained += p_DamageToApply * v_KineticMultiplier;
+
+        // Decrease rigidbody mass if flag is true:
+        if (v_AffectsMass) { v_Rigidbody.mass -= p_DamageToApply * v_KineticMultiplier; }
     } // END - Apply KINETIC Damage.
 
     public void ApplyPlasmaDamage(float p_DamageToApply, float p_SubDamage, float p_EffectDuration) {
@@ -80,38 +80,43 @@ public class CS_DamageModule : MonoBehaviour {
         v_PlasmaSubDamage += p_SubDamage;
         v_DamageOverTimeLeft += p_EffectDuration; 
 
-        if (v_PlasmaWeakness){ // IF PLASMA weakness is true, multiply by specified value.
-            v_DamageSustained += p_DamageToApply * v_PlasmaMultiplier;
-        }// END - Weakness modified damage.
-        else { v_DamageSustained += p_DamageToApply; } // STANDARD APPLY
+        v_DamageSustained += p_DamageToApply * v_PlasmaMultiplier;
+
+        // Decrease rigidbody mass if flag is true:
+        if (v_AffectsMass) { v_Rigidbody.mass -= p_DamageToApply * v_PlasmaMultiplier; }
 
     } // END - Apply plasma damage.
 
 
     void ApplyPlasmaDamageOverTime(){
         if (v_PlasmaDamageOverTime) {
-            if(v_DamageOverTimeLeft >= 0.1f) {
+            // If there is time left on DoT:
+            if (v_DamageOverTimeLeft >= 0.01f) { 
                 v_DamageOverTimeLeft -= 1 * Time.deltaTime; // Decrease time left.
-                v_DamageSustained += v_PlasmaSubDamage; // Apply subdamage from plasma.
+                v_DamageSustained += v_PlasmaSubDamage * v_PlasmaMultiplier; // Apply subdamage from plasma.
             } // END - Decrease time left.
             else { // Set Plasma Damage to FALSE & Reset values.
                 v_PlasmaDamageOverTime = false;
                 v_PlasmaSubDamage = 0;
             } // END - Reset Plasma DoT.
         } // END - If PlasmaDamageOverTime is TRUE.
+          
+        // Decrease rigidbody mass if flag is true:
+        if (v_AffectsMass) { v_Rigidbody.mass -= v_PlasmaSubDamage * v_PlasmaMultiplier; }
     } // END - Apply Plasma DoT.
 
     public void ApplyExplosionDamage(float p_DamageToApply) {
-        if (v_ExplosionWeakness) { // IF EXPLOSION weakness is true, multiply by specified value.
-            v_DamageSustained += p_DamageToApply * v_ExplosionMultiplier;
-        } // END - Weakness modified damage.
-        else { v_DamageSustained += p_DamageToApply; } // STANDARD APPLY        
+        v_DamageSustained += p_DamageToApply * v_ExplosionMultiplier;
+        // Decrease rigidbody mass if flag is true:
+        if (v_AffectsMass) {v_Rigidbody.mass -= p_DamageToApply; }
     } // END - Apply plasma damage.
 
 
     void HealthCheck(){
         // IF USING MASS FOR HEALTH:
         if (v_UseMass) {
+            print(v_DamageSustained);
+            print("Using mass!");
             if((v_DamageSustained >= v_MinimumMass)) {
                 ObjectDestroyed();
             } // END - Damage Sustained greater than mass.
@@ -119,6 +124,7 @@ public class CS_DamageModule : MonoBehaviour {
         
         // IF USING STATIC INTEGER FOR HEALTH:
         else if(v_DamageSustained >= v_ModuleHealth) {
+            print("Using Health!");
             ObjectDestroyed();
         } // END - NOT using Mass.
     } // END - Health CHeck.

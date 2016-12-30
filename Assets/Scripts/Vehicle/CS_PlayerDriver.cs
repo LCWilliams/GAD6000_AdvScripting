@@ -48,14 +48,8 @@ public class CS_PlayerDriver : MonoBehaviour {
             PlayerTurretRotation();
             PlayerGunElevation();
         } // END -- Engine Enabled Only functions.
-    }
+    } // END - Update
 
-    void FixedUpdate(){
-        if (Engine.v_EngineEnabled){
-
-            } // END -- Engine Enabled Only functions.
-
-    } // END - Fixed Update.
 
 
     void PlayerForward() {
@@ -79,7 +73,7 @@ public class CS_PlayerDriver : MonoBehaviour {
             int v_DigitalInputValue = (int) Input.GetAxis("P1_Gears");
             Engine.ChangeGear(v_DigitalInputValue);
         }
-    }
+    } // END - GearChange.
 
 
     void PlayerTurretRotation() {

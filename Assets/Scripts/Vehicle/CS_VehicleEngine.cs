@@ -2,7 +2,7 @@
 AUTHOR(S): LEE WILLIAMS		DATE: 10/2016 - 01/2017
 EDITOR(S): SCOTT ANDERS
 SCRIPT HOLDERS: PF_PlayerVehicle
-INBOUND REFERENCES: CS_WheelManager | CS_PlayerDriver | CS_AIDriver | CS_WheeledTankWeapon_00
+INBOUND REFERENCES: CS_PlayerDriver | CS_AIDriver | CS_WheeledTankWeapon_00
 OUTBOUND REFERENCES: CS_WheelManager
 OVERVIEW:  Controls the main engine of the vehicle.  
 Efficiency is used as a multiplier of 0-1 on various components.
