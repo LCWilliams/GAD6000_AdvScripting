@@ -26,16 +26,18 @@ public class CS_Rocket_01 : MonoBehaviour
     public bool v_ApplyExplosion;
     public float v_ExplosionDamage;
     public float v_ExplosionRadius;
+    public float v_PlasmaRadius;
     [Tooltip("The rocket will explode when its flight time is reached.")]
     public bool v_ExplodeOnFlightEnd;
     public GameObject go_Explosion;
+    bool v_Exploded; // Flag used to prevent explode on flight end from spamming explosion instances; despite being pretty.
 
     [Space(10)]
 
     [Header("PLASMA DAMAGE SETTINGS:")]
     public bool v_ApplyPlasma;
     public float v_PlasmaDamage;
-    public float v_PlasmaDamageOverTime;
+    public float v_PlasmaSubDamage;
     public float v_PlasmaEffectDuration;
     public GameObject go_PlasmaExplosion;
 
@@ -90,7 +92,12 @@ public class CS_Rocket_01 : MonoBehaviour
         // Rocket lifetime:
         if (v_FlightTime.Elapsed.TotalSeconds >= v_RocketLife){
             v_FlightTime.Stop();
-            if (v_ExplodeOnFlightEnd) { /* SPLOSION! */ }
+            if (v_ExplodeOnFlightEnd && v_Exploded == false) {
+                v_Exploded = true;
+                if (v_ApplyExplosion == true) { CreateStandardExplosion(); }
+                if (v_ApplyPlasma) { CreatePlasmaExplosion(); }
+                Destroy(gameObject, 1);
+            }
             else {
                 Destroy(gameObject, 1); }
         } // END - Rocket lifetime.
@@ -119,16 +126,41 @@ public class CS_Rocket_01 : MonoBehaviour
 
     private void OnCollisionEnter(Collision p_Collision){
         CS_DamageModule v_HitObjectDamageModule = p_Collision.collider.gameObject.GetComponent<CS_DamageModule>();
+        // Apply kinetic damage immediately:
+        if(v_HitObjectDamageModule != null && v_ApplyKinetic) { v_HitObjectDamageModule.ApplyKineticDamage(v_KineticDamage); }
 
-        if(v_HitObjectDamageModule != null) {
-            // Apply the damage types according to settings.
-            if (v_ApplyKinetic) { v_HitObjectDamageModule.ApplyKineticDamage(v_KineticDamage); }
-            if (v_ApplyExplosion) { v_HitObjectDamageModule.ApplyExplosionDamage(v_ExplosionDamage); }
-            if (v_ApplyPlasma) { v_HitObjectDamageModule.ApplyPlasmaDamage(v_PlasmaDamage, v_PlasmaDamageOverTime, v_PlasmaEffectDuration); }
-        } // IF object has damage module:  apply damage corresponding to settings.
+        // Apply Explosion (Instantiate).
+        if (v_ApplyExplosion == true) { CreateStandardExplosion(); }
 
-        Instantiate(go_Explosion, transform.position, transform.rotation);
-        Destroy(transform.gameObject);
+        // Apply Plasma Damage (Instantiate).
+        if (v_ApplyPlasma) { CreatePlasmaExplosion(); }
+
+        Destroy(gameObject);
     } // END - On collision Enter.
+
+    void CreateStandardExplosion() {
+            GameObject v_ExplosionInstance = (GameObject) Instantiate(go_Explosion, transform.position, transform.rotation, null);
+                // Obtain Explosion Script:
+                CS_Explosion_00 ExplosionModule = v_ExplosionInstance.GetComponent<CS_Explosion_00>();
+                // Apply settings onto explosion:
+                ExplosionModule.v_ExplosionForce = v_ExplosionDamage * v_ExplosionRadius;
+                ExplosionModule.v_ExplosionDamage = v_ExplosionDamage;
+                ExplosionModule.v_ExplosionRadius = v_ExplosionRadius;
+    } // END - Create Standard Explosion.
+
+
+    void CreatePlasmaExplosion() {
+        //v_HitObjectDamageModule.ApplyPlasmaDamage(v_PlasmaDamage, v_PlasmaDamageOverTime, v_PlasmaEffectDuration
+
+        // Instantiate an explosion:
+        GameObject v_PlasmaExplosionInstance = (GameObject)Instantiate(go_PlasmaExplosion, transform.position, transform.rotation, null);
+        // Obtain Explosion Script:
+        CS_PlasmaExplosion_00 PlasmaExplosionModule = v_PlasmaExplosionInstance.GetComponent<CS_PlasmaExplosion_00>();
+        // Apply settings onto explosion:
+        PlasmaExplosionModule.v_PlasmaExplosionRadius = v_PlasmaRadius;
+        PlasmaExplosionModule.v_PlasmaExplosionDamage = v_PlasmaDamage;
+        PlasmaExplosionModule.v_PlasmaExplosionSubDamage = v_PlasmaSubDamage;
+        PlasmaExplosionModule.v_PlasmaExplosionEffectDuration = v_PlasmaEffectDuration;
+    } // END - Create Plasma Explosion.
 
 } // END - Monobehaviour.

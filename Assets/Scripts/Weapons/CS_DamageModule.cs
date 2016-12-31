@@ -15,6 +15,7 @@ public class CS_DamageModule : MonoBehaviour {
     // VARIABLES:
     [Space(15)]
     [Header("GENERAL SETTINGS:")]
+    [Tooltip("Will disable the object rather than destroying it.")]public bool v_DisableOverDestroy;
     public bool v_ExplodeOnDestroyed;
     public GameObject go_Explosion;
     public bool v_DetatchFromParent;
@@ -24,7 +25,6 @@ public class CS_DamageModule : MonoBehaviour {
     [Space(15)]
     [Header("MASS SETTINGS:")]
     [Tooltip("If true, the module will use the mass as 'health'.  \nREQUIRES RIGIDBODY!")]public bool v_UseMass;
-    [Tooltip("If true, mass will decrease from damage.")] public bool v_AffectsMass;
     [Tooltip("MULTIPLIED AGAINST INITIAL MASS! \nDamage taken reduces mass. \nWhen the mass of the object has lost the amount (result of this value), it is destroyed. \n\nLOWER VALUES RESULTS IN LESS DAMAGE SUSTAINABILITY.")][Range(0.1f, 0.9f)] public float v_MinMassMultiplier = 0.1f;
     float v_MinimumMass; // The calculated minimum mass value.
     Rigidbody v_Rigidbody;
@@ -53,8 +53,8 @@ public class CS_DamageModule : MonoBehaviour {
             v_MinimumMass = v_Rigidbody.mass * v_MinMassMultiplier;
         } // END - If Use Mass
 
-        // Debug Warn if all multipliers are 0.
-        if(v_KineticMultiplier == 0 && v_ExplosionMultiplier == 0 && v_PlasmaMultiplier == 0) { Debug.LogError("WARNING! " + this.gameObject +" Is Immune to ALL types of damage!"); }
+        // Debug Error if all multipliers are 0.
+        if(v_KineticMultiplier == 0 && v_ExplosionMultiplier == 0 && v_PlasmaMultiplier == 0) { Debug.LogError("WARNING! " + this.gameObject +" Is Immune to ALL types of damage!  Kinetic set to 0.1."); v_KineticMultiplier = 0.1f; }
     } // END - Awake.
 	
 	// Update is called once per frame
@@ -68,9 +68,6 @@ public class CS_DamageModule : MonoBehaviour {
 
     public void ApplyKineticDamage(float p_DamageToApply) {
         v_DamageSustained += p_DamageToApply * v_KineticMultiplier;
-
-        // Decrease rigidbody mass if flag is true:
-        if (v_AffectsMass) { v_Rigidbody.mass -= p_DamageToApply * v_KineticMultiplier; }
     } // END - Apply KINETIC Damage.
 
     public void ApplyPlasmaDamage(float p_DamageToApply, float p_SubDamage, float p_EffectDuration) {
@@ -78,13 +75,10 @@ public class CS_DamageModule : MonoBehaviour {
         
         // Allow plasma effects to be stacked:
         v_PlasmaSubDamage += p_SubDamage;
-        v_DamageOverTimeLeft += p_EffectDuration; 
-
+        v_DamageOverTimeLeft += p_EffectDuration;
         v_DamageSustained += p_DamageToApply * v_PlasmaMultiplier;
 
-        // Decrease rigidbody mass if flag is true:
-        if (v_AffectsMass) { v_Rigidbody.mass -= p_DamageToApply * v_PlasmaMultiplier; }
-
+//        print("PLASMA HIT! " + v_DamageSustained);
     } // END - Apply plasma damage.
 
 
@@ -100,23 +94,17 @@ public class CS_DamageModule : MonoBehaviour {
                 v_PlasmaSubDamage = 0;
             } // END - Reset Plasma DoT.
         } // END - If PlasmaDamageOverTime is TRUE.
-          
-        // Decrease rigidbody mass if flag is true:
-        if (v_AffectsMass) { v_Rigidbody.mass -= v_PlasmaSubDamage * v_PlasmaMultiplier; }
+
     } // END - Apply Plasma DoT.
 
     public void ApplyExplosionDamage(float p_DamageToApply) {
         v_DamageSustained += p_DamageToApply * v_ExplosionMultiplier;
-        // Decrease rigidbody mass if flag is true:
-        if (v_AffectsMass) {v_Rigidbody.mass -= p_DamageToApply; }
     } // END - Apply plasma damage.
 
 
     void HealthCheck(){
         // IF USING MASS FOR HEALTH:
         if (v_UseMass) {
-            print(v_DamageSustained);
-            print("Using mass!");
             if((v_DamageSustained >= v_MinimumMass)) {
                 ObjectDestroyed();
             } // END - Damage Sustained greater than mass.
@@ -132,11 +120,12 @@ public class CS_DamageModule : MonoBehaviour {
     void ObjectDestroyed() {
         if(v_Destroyed == false) {
             v_Destroyed = true; // This flag ensures that destruction call only occurs ONCE.
-            Destroy(gameObject, v_ObjectDestructionDelay);
-
-            if (v_DetatchFromParent) { transform.SetParent(null, true); }
+            if (v_DetatchFromParent) { gameObject.transform.SetParent(null, true); }
             if (v_ExplodeOnDestroyed) { Instantiate(go_Explosion, transform.position, transform.rotation); }
 
+            // If DisableOverDestroy is true, disable the object, else destroy it.
+            if (v_DisableOverDestroy) { gameObject.SetActive(false); }else { 
+            Destroy(gameObject, v_ObjectDestructionDelay); }
         } // END - If destroyed is FALSE.
     } // END - Object Destroyed.
 

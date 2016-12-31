@@ -76,7 +76,6 @@ public class CS_VehicleEngine : MonoBehaviour {
         v_EngineRigidbody.centerOfMass = v_CenterofMass.localPosition; // Debug.Log(this.transform.GetComponent<Rigidbody>().centerOfMass);
         v_TorqueStep = v_MaximumTorque / v_MaxGears;
         v_SpeedStep = v_MaximumSpeed / v_MaxGears;
-        Debug.Log(v_TorqueStep + " " + v_SpeedStep);
     }
 
     // Use this for initialization
@@ -161,7 +160,8 @@ public class CS_VehicleEngine : MonoBehaviour {
          CALCULATE TORQUE TO APPLY:
          The following section is used to create a TorqueLerp value, used to lerp between 0 and the torque allowed by the current gear selected
          In order to create a system similar to those of actual vehiclular gear systems, the torque is reversed:  Gear 1 has maximum torque.
-         The maximum value of the lerp:  Torque Steps are added to the maximum torque:  this is required to prevent a torque value of 0 being applied at maximum gear.
+         
+        The maximum value of the lerp:  Torque Steps are added to the maximum torque:  this is required to prevent a torque value of 0 being applied at maximum gear.
          This value is then subtracted against the current gear multiplied gearSteps.
             
         TorqueLerp is calculated by dividing the current speed by the current gear maximum allowed speed, then multiplied against acceleration input & gear efficiency.
@@ -189,14 +189,23 @@ public class CS_VehicleEngine : MonoBehaviour {
             // Set Reverse flag to false:
         } else { v_Reversing = false; }
 
+
+        // -----------------------------------------------------------------------------------------------------------------------------------------------------------
+        // -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
         // LIMIT SPEED:  Used over clamps to allow the vehicle to travel faster in the event of going downhill.
         if (v_CurrentSpeed > v_GearLimitedSpeed || v_CurrentSpeed > v_MaximumSpeed){
             v_torqueToApply = 0;
         } // END - Prevent torque application if speed is greater than MAX
 
 
+        // -----------------------------------------------------------------------------------------------------------------------------------------------------------
+        // -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
         // RECURSIVE:  Apply torque to wheels if their "power to ___" is true.
-        if (v_WheelManager.v_PowerToFront) {
+        if (v_WheelManager.v_PowerToFront && v_WheelManager.v_WheelsFront.Length != 0) {
             // Apply acceleration to front wheels.
             for (int frontWheelIndex = 0; frontWheelIndex < v_WheelManager.v_WheelsFront.Length; frontWheelIndex++) {
                 v_WheelManager.v_WheelsFront[frontWheelIndex].motorTorque = v_torqueToApply;
@@ -210,7 +219,7 @@ public class CS_VehicleEngine : MonoBehaviour {
                 } // END - For loop. 
             } // END - Power to mid.
 
-        if (v_WheelManager.v_PowerToRear) {
+        if (v_WheelManager.v_PowerToRear && v_WheelManager.v_WheelsRear.Length != 0) {
             for (int RearWheelIndex = 0; RearWheelIndex < v_WheelManager.v_WheelsRear.Length; RearWheelIndex++){
                 v_WheelManager.v_WheelsRear[RearWheelIndex].motorTorque = v_torqueToApply;
             } // END - For loop. 
@@ -222,14 +231,14 @@ public class CS_VehicleEngine : MonoBehaviour {
     public void Steering(float p_steerInput) {
         float v_steerAmmount = v_WheelManager.v_Steering * p_steerInput;
         // FRONT steering loop.
-        if (v_WheelManager.v_SteeringFront) {
+        if (v_WheelManager.v_SteeringFront && v_WheelManager.v_WheelsFront.Length != 0) {
             for(int frontSteerIndex = 0; frontSteerIndex < v_WheelManager.v_WheelsFront.Length; frontSteerIndex++) {
                 v_WheelManager.v_WheelsFront[frontSteerIndex].steerAngle = v_steerAmmount;
             } // END - for steering loop.
         }// END - Steering front.
 
         // REAR steering loop.
-        if (v_WheelManager.v_SteeringRear) {
+        if (v_WheelManager.v_SteeringRear && v_WheelManager.v_WheelsRear.Length != 0) {
             for (int rearSteerIndex = 0; rearSteerIndex < v_WheelManager.v_WheelsRear.Length; rearSteerIndex++){
                 v_WheelManager.v_WheelsRear[rearSteerIndex].steerAngle = v_steerAmmount *-1;
             } // END - for steering loop.
@@ -245,6 +254,8 @@ public class CS_VehicleEngine : MonoBehaviour {
             v_Braking = true;
         } else { v_Braking = false; }
 
+
+        // CALCULATE AMOUNT OF BRAKE TORQUE TO APPLY:
         if (v_EngineEnabled) {
             // When Engine is enabled: ADD wheel brake torque to engine-assisted brakes:
             v_BrakeTorqueToApply =  (v_WheelBrakeTorque + (v_PowerBrakeTorque * v_Efficiency)) * p_BrakeAmmount;
@@ -252,19 +263,19 @@ public class CS_VehicleEngine : MonoBehaviour {
             v_BrakeTorqueToApply = v_WheelBrakeTorque * p_BrakeAmmount;
         } // END - TorqueToApply If statements.
 
-        if (v_WheelManager.v_BrakesFront){
+        if (v_WheelManager.v_BrakesFront && v_WheelManager.v_WheelsFront.Length != 0){
             for (int frontBrakeIndex = 0; frontBrakeIndex < v_WheelManager.v_WheelsFront.Length; frontBrakeIndex++) {
                 v_WheelManager.v_WheelsFront[frontBrakeIndex].brakeTorque = v_BrakeTorqueToApply;
             } // END - Front wheel loop.
         } // END - Brakes to front.
 
-        if (v_WheelManager.v_BrakesMid){
+        if (v_WheelManager.v_BrakesMid && v_WheelManager.v_WheelsMid.Length != 0){
             for( int midBrakeIndex = 0; midBrakeIndex < v_WheelManager.v_WheelsMid.Length; midBrakeIndex++) {
                 v_WheelManager.v_WheelsMid[midBrakeIndex].brakeTorque = v_BrakeTorqueToApply;
             } // END - Mid wheel loop.
         } // END - Brakes to mid.
 
-        if (v_WheelManager.v_BrakesRear){
+        if (v_WheelManager.v_BrakesRear && v_WheelManager.v_WheelsRear.Length != 0){
             for (int rearBrakeIndex = 0; rearBrakeIndex < v_WheelManager.v_WheelsRear.Length; rearBrakeIndex++) {
                 v_WheelManager.v_WheelsRear[rearBrakeIndex].brakeTorque = v_BrakeTorqueToApply;
             } // END - Rear wheel loop.

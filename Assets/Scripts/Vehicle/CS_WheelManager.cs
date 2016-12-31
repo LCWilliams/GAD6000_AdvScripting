@@ -33,12 +33,14 @@ public class CS_WheelManager : MonoBehaviour {
     public bool v_BrakesRear; // Allows rear braking.
 
 
-    // Use this for initialization
 	void Start () {
         v_TotalWheels = (v_WheelsFront.Length + v_WheelsMid.Length + v_WheelsRear.Length);
 	} // END - Start
-	
-	void FixedUpdate () {
+
+
+    // Recursively update graphical wheel to match wheel collider:
+    void FixedUpdate() {
+        if(v_WheelsFront.Length != 0) { 
         for (int WheelIndex = 0; WheelIndex < v_WheelsFront.Length; WheelIndex++) {
             Transform VisualWheel = v_WheelsFront[WheelIndex].GetComponent<Collider>().transform.GetChild(0);
             Vector3 v_position;
@@ -48,8 +50,10 @@ public class CS_WheelManager : MonoBehaviour {
             VisualWheel.position = v_position;
             VisualWheel.rotation = v_rotation;
         } // END -- Front wheel position update
+        }
 
-        for (int WheelIndex = 0; WheelIndex < v_WheelsMid.Length; WheelIndex++){
+        if (v_WheelsMid.Length != 0) { 
+        for (int WheelIndex = 0; WheelIndex < v_WheelsMid.Length; WheelIndex++) {
             Transform VisualWheel = v_WheelsMid[WheelIndex].GetComponent<Collider>().transform.GetChild(0);
             Vector3 v_position;
             Quaternion v_rotation;
@@ -58,8 +62,9 @@ public class CS_WheelManager : MonoBehaviour {
             VisualWheel.position = v_position;
             VisualWheel.rotation = v_rotation;
         } // END -- Mid wheel position update
+    }
 
-
+        if(v_WheelsRear.Length != 0) { 
         for (int WheelIndex = 0; WheelIndex < v_WheelsRear.Length; WheelIndex++){
             Transform VisualWheel = v_WheelsRear[WheelIndex].GetComponent<Collider>().transform.GetChild(0);
             Vector3 v_position;
@@ -68,6 +73,7 @@ public class CS_WheelManager : MonoBehaviour {
 
             VisualWheel.position = v_position;
             VisualWheel.rotation = v_rotation;
+            }
         } // END -- Rear wheel position update
 
     } // END - FixedUpdate.
