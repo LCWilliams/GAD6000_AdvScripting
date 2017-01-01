@@ -148,13 +148,12 @@ public class CS_WheeledTankWeapons_00 : MonoBehaviour {
         if(v_RocketCooldown > 0) {
             Debug.Log("Fire rockets!");
             for (int rocketpodIndex = 0; rocketpodIndex < go_RocketPods.Length; rocketpodIndex++) {
-                for (int rocketLaunchIndex = 0; rocketLaunchIndex < v_SpawnCountPerPod;) {
+                for (int rocketLaunchIndex = 0; rocketLaunchIndex < v_SpawnCountPerPod; rocketLaunchIndex++) {
                     GameObject v_RocketClone = (GameObject)Instantiate(go_CurrentMissile, go_RocketPods[rocketpodIndex].transform.position, go_RocketPods[rocketpodIndex].transform.rotation);
                     v_RocketClone.GetComponent<CS_Rocket_01>().v_Target = go_Target;
-                    //if (v_Sequential) { rocketLaunchIndex++; yield return new WaitForSeconds(v_TimeBetweenLaunches); } else { break; }
+                    yield return new WaitForSeconds(v_TimeBetweenLaunches);
                 } // END - RocketLaunch Index.
-                yield return new WaitForSeconds(v_TimeBetweenLaunches);
-                
+//                yield return new WaitForSeconds(v_TimeBetweenLaunches);
             } // END - For loop: RocketPods.
 
         } // END - Rocket cooldown.
