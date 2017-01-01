@@ -19,9 +19,9 @@ public class CS_PlayerDriver : MonoBehaviour {
     CS_WheeledTankWeapons_00 v_TankWeapons; // player weapon scripts.
     // Components:
     [Header("CAMERAS: ")][Space(10)]
-    [Tooltip("The players camera/head.")][Header("CAM0: Player Internal:")]public GameObject v_PlayerCamera;
-    [Tooltip("The VIEWPORT camera- located at the front of the vehicle.")][Header("CAM1: Viewport:")] public GameObject v_ViewportCamera;
-    [Tooltip("The GUN camera: ideally somewhere that makes sense and will aim with the gun.")][Header("CAM2: Viewport:")] public GameObject v_GunCamera;
+    [Tooltip("The players camera/head.")][Header("CAM0: Player Internal:")]public Camera v_PlayerCamera;
+    [Tooltip("The VIEWPORT camera- located at the front of the vehicle.")][Header("CAM1: Viewport:")] public Camera v_ViewportCamera;
+    [Tooltip("The GUN camera: ideally somewhere that makes sense and will aim with the gun.")][Header("CAM2: Gun:")] public Camera v_GunCamera;
     int v_CurrentCamera; // Which camera is currently active.
     [Tooltip("Pixels from center that should count as a deadzone")]
     [Range(0.01f,0.3f)] public float v_TurretInputDeadZone;
@@ -29,6 +29,7 @@ public class CS_PlayerDriver : MonoBehaviour {
 
     void Start () {
         // Get components:
+        v_CurrentCamera = 1;
         Engine = GetComponent<CS_VehicleEngine>();
         v_InteriorPanels = GetComponent<CS_WheeledTankInteriorPanels>();
         v_TankWeapons = GetComponent<CS_WheeledTankWeapons_00>();
@@ -39,37 +40,33 @@ public class CS_PlayerDriver : MonoBehaviour {
         if (Engine.v_EngineEnabled){
             PlayerChangeMode();
             PlayerForward();
-
+        } // END -- Engine Enabled Only functions.
             PlayerGearChange();
             PlayerSteer();
             PlayerBrake();
             PlayerTurretRotation();
             PlayerGunElevation();
-        } // END -- Engine Enabled Only functions.
+            PlayerRocket();
     } // END - Update
 
 
 
     void PlayerForward() {
-        float v_analogueInputValue = Input.GetAxis("P1_Acceleration");
-        Engine.Acceleration(v_analogueInputValue);
+        Engine.Acceleration(Input.GetAxis("P1_Acceleration"));
     } // END - Player forward input.
 
     void PlayerSteer() {
-        float v_analogueInputValue = Input.GetAxis("P1_Steer");
-        Engine.Steering(v_analogueInputValue);
+        Engine.Steering(Input.GetAxis("P1_Steer"));
     } // END - Player Steer input.
 
     void PlayerBrake() {
-        float v_analogueInputValue = Input.GetAxis("P1_Brake");
-        Engine.ApplyBraking(v_analogueInputValue);
+        Engine.ApplyBraking(Input.GetAxis("P1_Brake"));
     } // END - Player brake input.
 
 
     void PlayerGearChange() {
         if (Input.GetButtonDown("P1_Gears")) {
-            int v_DigitalInputValue = (int) Input.GetAxis("P1_Gears");
-            Engine.ChangeGear(v_DigitalInputValue);
+            Engine.ChangeGear((int)Input.GetAxis("P1_Gears"));
         }
     } // END - GearChange.
 
@@ -111,19 +108,27 @@ public class CS_PlayerDriver : MonoBehaviour {
 
     void PlayerChangeMode() {
         if(Input.GetButtonDown("P1_SwapCamera")) {
-        v_InteriorPanels.SwapMainScreen();
-        //    v_CurrentCamera++;
-        //    if(v_CurrentCamera == v_CameraPositions.Length) { v_CurrentCamera = 0; }
-        //    v_PlayerCamera.transform.localPosition = v_CameraPositions[v_CurrentCamera].transform.localPosition;
+            v_InteriorPanels.SwapMainScreen();
+            // Set Current Camera variable.
+            if(v_CurrentCamera == 1) { v_CurrentCamera = 2; } else { v_CurrentCamera = 1; }
         }// END IF input.
 
     } // END PlayerChangeMode.
 
     void PlayerShoot(){
         if(Input.GetButtonDown("P1_Shoot")) {
-            Debug.Log("Fired");
             v_TankWeapons.FireMain_Basic();
         } // END - Input/axis.
     } // END - Player shoot.
+
+    void PlayerRocket() {
+        if (Input.GetButtonDown("P1_Rocket") && v_TankWeapons.v_CurrentlyTargeting == false) {
+            Debug.Log("rockets...");
+            v_TankWeapons.InitialRocket();
+            // Pass the current active camera to the weapons for targeting.
+            if (v_CurrentCamera == 1) { v_TankWeapons.v_CurrentModeCamera = v_ViewportCamera; }
+            else { v_TankWeapons.v_CurrentModeCamera = v_GunCamera; }
+        }
+    } // END - PlayerRocketshoot.
 
 } // END - CS_PlayerDriver : Monobehaviour.

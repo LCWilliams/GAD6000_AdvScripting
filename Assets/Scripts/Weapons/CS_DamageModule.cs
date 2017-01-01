@@ -20,17 +20,17 @@ public class CS_DamageModule : MonoBehaviour {
     public GameObject go_Explosion;
     public bool v_DetatchFromParent;
     [Tooltip("Time in seconds after object is classed as destroyed for the GameObject to be destroyed.")]public float v_ObjectDestructionDelay;
-    float v_DamageSustained; // The amount of damage currently sustained by the module.
+    public float v_DamageSustained; // The amount of damage currently sustained by the module.
     bool v_Destroyed; // Flag to ensure GameObject.Destroy is only ran once, not recursively.
     [Space(15)]
     [Header("MASS SETTINGS:")]
     [Tooltip("If true, the module will use the mass as 'health'.  \nREQUIRES RIGIDBODY!")]public bool v_UseMass;
-    [Tooltip("MULTIPLIED AGAINST INITIAL MASS! \nDamage taken reduces mass. \nWhen the mass of the object has lost the amount (result of this value), it is destroyed. \n\nLOWER VALUES RESULTS IN LESS DAMAGE SUSTAINABILITY.")][Range(0.1f, 0.9f)] public float v_MinMassMultiplier = 0.1f;
+    [Tooltip("MULTIPLIED AGAINST INITIAL MASS! \nDamage taken reduces mass. \nWhen the mass of the object has lost the amount (result of this value), it is destroyed. \n\nLOWER VALUES EQUATE TO LESS HEALTH!")][Range(0.1f, 1)] public float v_MinMassMultiplier = 0.1f;
     float v_MinimumMass; // The calculated minimum mass value.
     Rigidbody v_Rigidbody;
     [Space(15)]
     [Header("HEALTH SETTINGS:")]
-    [Tooltip("Used if 'UseMass' is FALSE")]public int v_ModuleHealth;
+    [Tooltip("Used if 'UseMass' is FALSE, else is set automatically to match mass value.")]public float v_ModuleHealth;
     bool v_PlasmaDamageOverTime; // If true, will apply plasma damage over time.
     float v_DamageOverTimeLeft; // Remaining time of DoT.
     float v_PlasmaSubDamage; // How much damage to apply.
@@ -50,6 +50,8 @@ public class CS_DamageModule : MonoBehaviour {
                 v_Rigidbody = this.gameObject.AddComponent<Rigidbody>();
                 v_Rigidbody.mass = 100;
             } // END - If rigidbody = NULL.
+            // Change module health:
+            v_ModuleHealth = v_Rigidbody.mass;
             v_MinimumMass = v_Rigidbody.mass * v_MinMassMultiplier;
         } // END - If Use Mass
 
@@ -78,7 +80,6 @@ public class CS_DamageModule : MonoBehaviour {
         v_DamageOverTimeLeft += p_EffectDuration;
         v_DamageSustained += p_DamageToApply * v_PlasmaMultiplier;
 
-//        print("PLASMA HIT! " + v_DamageSustained);
     } // END - Apply plasma damage.
 
 
@@ -112,7 +113,6 @@ public class CS_DamageModule : MonoBehaviour {
         
         // IF USING STATIC INTEGER FOR HEALTH:
         else if(v_DamageSustained >= v_ModuleHealth) {
-            print("Using Health!");
             ObjectDestroyed();
         } // END - NOT using Mass.
     } // END - Health CHeck.

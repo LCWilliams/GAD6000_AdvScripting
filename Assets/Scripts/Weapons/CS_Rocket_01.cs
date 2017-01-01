@@ -19,6 +19,8 @@ public class CS_Rocket_01 : MonoBehaviour
     [Header("KINETIC DAMAGE SETTINGS:")]
     public bool v_ApplyKinetic;
     public float v_KineticDamage;
+    public bool v_KineticShockwave;
+    public float v_KineticShockwaveRadius;
 
     [Space(10)]
 
@@ -64,6 +66,7 @@ public class CS_Rocket_01 : MonoBehaviour
     private void Awake(){
         v_FlightTime = new Stopwatch();
         v_FlightTime.Start();
+        GetComponent<Collider>().enabled = false;
     } // END - Awake.
 
     void Start(){
@@ -88,6 +91,7 @@ public class CS_Rocket_01 : MonoBehaviour
         // CLEARENCE TIME: Prevents rocket from tracking immediately.
         if (v_FlightTime.ElapsedMilliseconds >= v_ClearanceTime){
             SetTrackingRotations();
+            if ((GetComponent<Collider>().enabled == false)) { GetComponent<Collider>().enabled = true; }
         } // END - If elapsed > Clearance time.
         // Rocket lifetime:
         if (v_FlightTime.Elapsed.TotalSeconds >= v_RocketLife){
@@ -125,9 +129,19 @@ public class CS_Rocket_01 : MonoBehaviour
     // ------------------------------------------------------------------------------------------------------
 
     private void OnCollisionEnter(Collision p_Collision){
-        CS_DamageModule v_HitObjectDamageModule = p_Collision.collider.gameObject.GetComponent<CS_DamageModule>();
+        CS_DamageModule v_HitObjectDamageModule = p_Collision.gameObject.GetComponent<CS_DamageModule>();
         // Apply kinetic damage immediately:
-        if(v_HitObjectDamageModule != null && v_ApplyKinetic) { v_HitObjectDamageModule.ApplyKineticDamage(v_KineticDamage); }
+        if (v_KineticShockwave) { 
+        if(v_HitObjectDamageModule != null && v_ApplyKinetic) {
+            Collider[] v_ObjectsHit = Physics.OverlapSphere(transform.localPosition, v_KineticShockwaveRadius);
+                for(int objectHitIndex = 0; objectHitIndex > v_ObjectsHit.Length; objectHitIndex++) {
+                    CS_DamageModule v_ShockWaveHitDamageModule = v_ObjectsHit[objectHitIndex].gameObject.GetComponent<CS_DamageModule>();
+                    v_ShockWaveHitDamageModule.ApplyKineticDamage(v_KineticDamage);
+                }// END - Kinetic shockwave for loop.
+            }
+            else { 
+            v_HitObjectDamageModule.ApplyKineticDamage(v_KineticDamage); }
+        }
 
         // Apply Explosion (Instantiate).
         if (v_ApplyExplosion == true) { CreateStandardExplosion(); }

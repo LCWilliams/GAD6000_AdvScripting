@@ -169,11 +169,11 @@ public class CS_VehicleEngine : MonoBehaviour {
 
         // The first IF statement is required in order to allow the vehicle to move from a standstil.
         if (v_CurrentSpeed <= 1 && v_Reversing == false) {
-            v_torqueToApply = v_MaximumTorque * p_accelerationAmmount; // A basic torque-input multiplication is used until the vehicle has reached a speed of 1.
+            v_torqueToApply = (v_MaximumTorque * p_accelerationAmmount) * v_Efficiency; // A basic torque-input multiplication is used until the vehicle has reached a speed of 1.
 
         } else {
             v_TorqueLerpTime = Mathf.Clamp01((v_CurrentSpeed / v_GearLimitedSpeed) * (p_accelerationAmmount * GearEfficiency()));
-            v_torqueToApply = Mathf.Lerp(0, ((v_MaximumTorque + (v_TorqueStep * 2) ) - (v_TorqueStep * v_Gear)), v_TorqueLerpTime);
+            v_torqueToApply = Mathf.Lerp(0, v_GearLimitedTorque, v_TorqueLerpTime);
         } // END - Standard Torque calculation.
 
         // REVERSE:
@@ -226,7 +226,6 @@ public class CS_VehicleEngine : MonoBehaviour {
         } // END - Power to Rear.
 
     } // END - Acceleration.
-
 
     public void Steering(float p_steerInput) {
         float v_steerAmmount = v_WheelManager.v_Steering * p_steerInput;
@@ -336,10 +335,10 @@ public class CS_VehicleEngine : MonoBehaviour {
     public void ChangeGear(int p_GearChange) {
         v_Gear = Mathf.Clamp((v_Gear + p_GearChange), 0, v_MaxGears);
         v_GearLimitedSpeed = (v_MaximumSpeed / v_MaxGears) * v_Gear;
-        v_GearLimitedTorque = v_TorqueStep * v_Gear;
+        v_GearLimitedTorque = ((v_MaximumTorque + (v_TorqueStep * 2)) - (v_TorqueStep * v_Gear));
 
-        Debug.Log("GEAR: " + v_Gear +"| LimitedSpeed: " +v_GearLimitedSpeed +"| Limited Torque: " +v_GearLimitedTorque);
-        
+//        Debug.Log("GEAR: " + v_Gear +"| LimitedSpeed: " +v_GearLimitedSpeed +"| Limited Torque: " +v_GearLimitedTorque);
+
     } // END - gear change.
 
 } // END - Mono Behaviour.
