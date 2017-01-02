@@ -110,7 +110,7 @@ public class CS_Rocket_01 : MonoBehaviour
 
     // ------------------------------------------------------------------------------------------------------
 
-        void UpdateTrackingTimes() {
+    void UpdateTrackingTimes() {
         v_CurrentAimTime = Mathf.Clamp01(v_CurrentAimTime + ((v_AimTimeMultiplier * Time.deltaTime) / v_AimTime));
         
         if (v_CurrentAimTime >= v_AimTime){
@@ -131,16 +131,13 @@ public class CS_Rocket_01 : MonoBehaviour
     private void OnCollisionEnter(Collision p_Collision){
         CS_DamageModule v_HitObjectDamageModule = p_Collision.gameObject.GetComponent<CS_DamageModule>();
         // Apply kinetic damage immediately:
+        if(v_HitObjectDamageModule != null && v_ApplyKinetic) { v_HitObjectDamageModule.ApplyKineticDamage(v_KineticDamage); }
         if (v_KineticShockwave) { 
-        if(v_HitObjectDamageModule != null && v_ApplyKinetic) {
             Collider[] v_ObjectsHit = Physics.OverlapSphere(transform.localPosition, v_KineticShockwaveRadius);
                 for(int objectHitIndex = 0; objectHitIndex > v_ObjectsHit.Length; objectHitIndex++) {
                     CS_DamageModule v_ShockWaveHitDamageModule = v_ObjectsHit[objectHitIndex].gameObject.GetComponent<CS_DamageModule>();
-                    v_ShockWaveHitDamageModule.ApplyKineticDamage(v_KineticDamage);
+                if(v_ShockWaveHitDamageModule != null) { v_ShockWaveHitDamageModule.ApplyKineticDamage(v_KineticDamage); }
                 }// END - Kinetic shockwave for loop.
-            }
-            else { 
-            v_HitObjectDamageModule.ApplyKineticDamage(v_KineticDamage); }
         }
 
         // Apply Explosion (Instantiate).

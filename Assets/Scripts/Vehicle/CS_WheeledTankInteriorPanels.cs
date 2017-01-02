@@ -3,7 +3,7 @@ AUTHOR(S): LEE WILLIAMS     DATE: 10/2016 - 01/2017
 EDITOR(S): SCOTT ANDERS
 SCRIPT HOLDERS: PF_PlayerVehicle
 INBOUND REFERENCES: CS_PlayerDriver
-OUTBOUND REFERENCES: CS_VehicleEngine
+OUTBOUND REFERENCES: CS_VehicleEngine | CS_WheeledTankWeapons_00 | CS_RocketTargetUI_00
 OVERVIEW:  Manages the elements of the player vehicle (PF_PlayerVehicle/WheeledTank) interior panels:
 Used for visual player feedback and the swapping of render textures.
 */
@@ -16,7 +16,9 @@ public class CS_WheeledTankInteriorPanels : MonoBehaviour {
 
 
     // VARIABLES:
-    public CS_VehicleEngine v_Engine;
+    CS_VehicleEngine v_Engine;
+    CS_WheeledTankWeapons_00 v_TankWeapons;
+    CS_RocketTargetUI_00 v_RocketTargetUI;
 
     [Header("Main Screens:")][Space(10)]
     GameObject v_Viewfinder;
@@ -29,6 +31,15 @@ public class CS_WheeledTankInteriorPanels : MonoBehaviour {
     public Image GUI_CurrentSpeedImage;
     public Text GUI_CurrentSpeed;
     public Text GUI_Brakes;
+    [Space(10)]
+    public GameObject GOGUI_RocketTarget;
+    public Text GUI_RocketTargetDistance;
+
+    public Text GUI_TargetStatus;
+    public Image GUI_TargetingProgress;
+    float v_InitialTargetTime;
+    public Text GUI_RocketStatus;
+    public Image GUI_RocketCooldown;
 
     [Header("VisualEffects")] [Space(10)]
     public float v_UpdateTime; // How long it takes to update lerped values.
@@ -45,11 +56,17 @@ public class CS_WheeledTankInteriorPanels : MonoBehaviour {
     void Start () {
         v_GunView = GameObject.Find("MainScreen_GunView");
         v_Viewfinder = GameObject.Find("MainScreen_Viewport");
+
         v_Engine = GetComponentInParent<CS_VehicleEngine>();
-        v_ConsoleParticleSystem = GameObject.Find("PanelDeficiencyParticle").GetComponent < ParticleSystem>();
+        v_TankWeapons = GetComponentInParent<CS_WheeledTankWeapons_00>();
+        v_RocketTargetUI = GOGUI_RocketTarget.GetComponent<CS_RocketTargetUI_00>();
+
+        v_ConsoleParticleSystem = GameObject.Find("PanelDeficiencyParticle").GetComponent <ParticleSystem>();
+
         v_ConsoleSparkEmitter = v_ConsoleParticleSystem.emission;
         v_ConsoleSparkEmitter.rate = 0;
-        if(!v_Viewfinder.activeSelf) { v_Viewfinder.SetActive(true); }
+
+        if (!v_Viewfinder.activeSelf) { v_Viewfinder.SetActive(true); }
         if(v_GunView.activeSelf) { v_GunView.SetActive(false); }
 	} // END - Start
 	
@@ -99,6 +116,34 @@ public class CS_WheeledTankInteriorPanels : MonoBehaviour {
             GUI_Brakes.color = new Color(1,1,1);
         } else{ GUI_Brakes.color = new Color(1,1,1,0.25f); }
 
+        // Update ROCKET TARGET:
+        if (v_TankWeapons.v_TargetLocked) { GUI_TargetStatus.text = "LOCKED!"; }
+        else if (v_TankWeapons.go_Target != null && v_TankWeapons.v_TargetLocked == false) {
+
+            float v_GUIDistance = Vector3.Distance(transform.position, v_TankWeapons.go_Target.position); 
+            v_RocketTargetUI.go_Target = v_TankWeapons.go_Target.gameObject;
+            GUI_RocketTargetDistance.text = v_GUIDistance.ToString("0");
+            GOGUI_RocketTarget.transform.localScale = new Vector3(1 + (v_GUIDistance / 500), 1 + (v_GUIDistance / 500),  0);
+
+        // Update ROCKET LOCK PROGRESS:
+            v_InitialTargetTime = v_TankWeapons.v_Distance * v_TankWeapons.v_SecondsPerMeter;
+
+            GUI_TargetStatus.text = "ACQUIRING TARGET";
+            GUI_TargetingProgress.fillAmount = 1 - (v_TankWeapons.v_TargetingTime / v_InitialTargetTime);
+
+        } // END - Rocket Target
+        else if(v_TankWeapons.go_Target == null){
+            GUI_TargetStatus.text = "NO TARGET";
+            GUI_TargetingProgress.fillAmount = 0;
+            GUI_RocketTargetDistance.text = 0.ToString("0");
+        } // END - RocketTarget Reset GUI.
+
+
+        if(v_TankWeapons.v_CurrentCooldown > 0) {
+            GUI_RocketStatus.text = "RELOADING MISSILES";
+            GUI_RocketCooldown.fillAmount = 1 - (v_TankWeapons.v_CurrentCooldown / v_TankWeapons.v_RocketCooldown);
+            print(1 - (v_TankWeapons.v_CurrentCooldown / v_TankWeapons.v_RocketCooldown));
+        } else{ GUI_RocketStatus.text = "MISSILES READY"; }
     } // END - Update Panels.
 
     void SparkEmitter_Decrease() {

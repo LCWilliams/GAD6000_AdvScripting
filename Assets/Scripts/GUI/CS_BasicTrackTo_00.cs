@@ -13,23 +13,30 @@ using System.Collections;
 public class CS_BasicTrackTo_00 : MonoBehaviour {
 
     // Variables:
-    [Tooltip("Defaults to item tagged PLAYER if not specified.")]public GameObject go_PlayerCamera;
+    public bool v_TargetIsPlayer;
+    GameObject go_Player;
+    [Tooltip("Defaults to item tagged PLAYER if not specified.")]public GameObject go_Target;
     [Tooltip("Will default to current object if not specified.")]public GameObject go_ItemToRotate;
+    CS_PlayerDriver v_PlayerDriver;
 
     // END - Variables.
 
     private void Start(){
         if(go_ItemToRotate == null) {
-            go_ItemToRotate = this.gameObject;
+            go_ItemToRotate = gameObject;
         }
-        if(go_PlayerCamera == null) {
-            go_PlayerCamera = GameObject.FindGameObjectWithTag("Player");
-        }
-    }
+        if(go_Target == null) {
+            go_Target = GameObject.FindGameObjectWithTag("Player");
+        } // END - Null target.
+
+        if (v_TargetIsPlayer) { go_Player = GameObject.FindGameObjectWithTag("Player"); v_PlayerDriver = go_Player.GetComponent<CS_PlayerDriver>(); }
+
+    } // END - Start
 
     // Update is called once per frame
     void Update () {
-        //        go_ItemToRotate.transform.LookAt(go_PlayerCamera.transform.position);
-        transform.rotation = Quaternion.LookRotation(transform.position - go_PlayerCamera.transform.position);
+        if (v_TargetIsPlayer) { go_Target = v_PlayerDriver.go_CurrentCamera.gameObject; }
+//        go_ItemToRotate.transform.LookAt(go_Target.transform.position);
+        go_ItemToRotate.transform.rotation = Quaternion.LookRotation(transform.position - go_Target.transform.position);
 	}
 }

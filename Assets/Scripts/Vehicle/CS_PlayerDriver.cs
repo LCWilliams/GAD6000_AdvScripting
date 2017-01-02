@@ -22,25 +22,28 @@ public class CS_PlayerDriver : MonoBehaviour {
     [Tooltip("The players camera/head.")][Header("CAM0: Player Internal:")]public Camera v_PlayerCamera;
     [Tooltip("The VIEWPORT camera- located at the front of the vehicle.")][Header("CAM1: Viewport:")] public Camera v_ViewportCamera;
     [Tooltip("The GUN camera: ideally somewhere that makes sense and will aim with the gun.")][Header("CAM2: Gun:")] public Camera v_GunCamera;
-    int v_CurrentCamera; // Which camera is currently active.
+    public Camera go_CurrentCamera; // Which camera is currently active.
     [Tooltip("Pixels from center that should count as a deadzone")]
     [Range(0.01f,0.3f)] public float v_TurretInputDeadZone;
     [Range(0.01f, 0.3f)] public float v_GunElevationInputDeadzone;
 
     void Start () {
         // Get components:
-        v_CurrentCamera = 1;
+        go_CurrentCamera = v_ViewportCamera;
         Engine = GetComponent<CS_VehicleEngine>();
         v_InteriorPanels = GetComponent<CS_WheeledTankInteriorPanels>();
         v_TankWeapons = GetComponent<CS_WheeledTankWeapons_00>();
     } // END - Start
 	
     void Update() {
-            PlayerShoot();
         if (Engine.v_EngineEnabled){
             PlayerChangeMode();
             PlayerForward();
+            PlayerMainShellChange();
+            PlayerRocketChange();
+            PlayerTargetLock();
         } // END -- Engine Enabled Only functions.
+            PlayerShoot();
             PlayerGearChange();
             PlayerSteer();
             PlayerBrake();
@@ -63,13 +66,11 @@ public class CS_PlayerDriver : MonoBehaviour {
         Engine.ApplyBraking(Input.GetAxis("P1_Brake"));
     } // END - Player brake input.
 
-
     void PlayerGearChange() {
         if (Input.GetButtonDown("P1_Gears")) {
             Engine.ChangeGear((int)Input.GetAxis("P1_Gears"));
         }
     } // END - GearChange.
-
 
     void PlayerTurretRotation() {
 //        Debug.Log(Input.mousePosition.x);
@@ -83,8 +84,6 @@ public class CS_PlayerDriver : MonoBehaviour {
                 Engine.TurretRotation(v_TurretRotation);
         } // END - Player Turret Rotation
     } // END player turret rotation input.
-
-
 
     void PlayerGunElevation() {
         // Divide screen height to get center:
@@ -110,7 +109,7 @@ public class CS_PlayerDriver : MonoBehaviour {
         if(Input.GetButtonDown("P1_SwapCamera")) {
             v_InteriorPanels.SwapMainScreen();
             // Set Current Camera variable.
-            if(v_CurrentCamera == 1) { v_CurrentCamera = 2; } else { v_CurrentCamera = 1; }
+            if(go_CurrentCamera == v_ViewportCamera) { go_CurrentCamera = v_GunCamera; } else { go_CurrentCamera = v_ViewportCamera; }
         }// END IF input.
 
     } // END PlayerChangeMode.
@@ -121,14 +120,30 @@ public class CS_PlayerDriver : MonoBehaviour {
         } // END - Input/axis.
     } // END - Player shoot.
 
-    void PlayerRocket() {
-        if (Input.GetButtonDown("P1_Rocket") && v_TankWeapons.v_CurrentlyTargeting == false) {
-            Debug.Log("rockets...");
-            v_TankWeapons.InitialRocket();
+    void PlayerTargetLock() {
+        if (Input.GetButtonDown("P1_Lock")) {
+            print("Mid Mouse BUtton");
             // Pass the current active camera to the weapons for targeting.
-            if (v_CurrentCamera == 1) { v_TankWeapons.v_CurrentModeCamera = v_ViewportCamera; }
-            else { v_TankWeapons.v_CurrentModeCamera = v_GunCamera; }
+            v_TankWeapons.v_CurrentModeCamera = v_GunCamera;
+
+            v_TankWeapons.LockTarget();
+        } // END - Input.
+    } // END - PlayerLock Target
+
+    void PlayerRocket() {
+        if (Input.GetButtonDown("P1_Rocket") && v_TankWeapons.v_TargetLocked) {
+            v_TankWeapons.StartCoroutine("FireRockets");
         }
     } // END - PlayerRocketshoot.
+
+    void PlayerMainShellChange() {
+        if (Input.GetButtonDown("P1_MainGunChange")) {
+            v_TankWeapons.ChangeMain();
+        } // END - If Input.
+    } // END - Player main shell change.
+
+    void PlayerRocketChange() {
+        if (Input.GetButtonDown("P1_RocketChange") && v_TankWeapons.v_ReleasingSalvo == false) { v_TankWeapons.ChangeRocket(); }
+    } // END - Player rocket change.
 
 } // END - CS_PlayerDriver : Monobehaviour.

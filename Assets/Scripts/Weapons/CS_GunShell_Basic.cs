@@ -35,7 +35,6 @@ public class CS_GunShell_Basic : MonoBehaviour {
     [Tooltip("The rocket will explode when its flight time is reached.")]
     public bool v_ExplodeOnFlightEnd;
     public GameObject go_Explosion;
-    bool v_Exploded; // Flag used to prevent explode on flight end from spamming explosion instances; despite being pretty.
 
     [Space(10)]
 
@@ -52,7 +51,6 @@ public class CS_GunShell_Basic : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         Destroy(this.gameObject, v_ShellLifetime);
-        v_Exploded = false;
 
         if (go_TravelWind == null) { go_TravelWind = transform.GetComponentInChildren<WindZone>(); }
 
@@ -84,7 +82,7 @@ public class CS_GunShell_Basic : MonoBehaviour {
 
     void ShellExplode(){
         Destroy(gameObject, 2f);
-        v_Exploded = true;
+//        v_Exploded = true;
         go_TravelWind.windMain = 0;
         GetComponent<Rigidbody>().isKinematic = true;
         Destroy(GetComponent<MeshRenderer>());
