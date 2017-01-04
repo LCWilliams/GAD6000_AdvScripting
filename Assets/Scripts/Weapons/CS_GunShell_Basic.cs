@@ -24,6 +24,8 @@ public class CS_GunShell_Basic : MonoBehaviour {
     [Header("KINETIC DAMAGE SETTINGS:")]
     public bool v_ApplyKinetic;
     public float v_KineticDamage;
+    public bool v_KineticShockwave;
+    public float v_KineticShockwaveRadius;
 
     [Space(10)]
 
@@ -63,7 +65,16 @@ public class CS_GunShell_Basic : MonoBehaviour {
         // Apply Kinetic damage to hit objects:
         if (v_ApplyKinetic) {
             CS_DamageModule v_DamageModule = p_HitObject.collider.GetComponent<CS_DamageModule>();
-            if (v_DamageModule != null) { v_DamageModule.ApplyKineticDamage(v_KineticDamage); }
+            if (v_DamageModule != null && v_ApplyKinetic) { v_DamageModule.ApplyKineticDamage(v_KineticDamage); }
+            if (v_KineticShockwave)
+            {
+                Collider[] v_ObjectsHit = Physics.OverlapSphere(transform.localPosition, v_KineticShockwaveRadius);
+                for (int objectHitIndex = 0; objectHitIndex > v_ObjectsHit.Length; objectHitIndex++)
+                {
+                    CS_DamageModule v_ShockWaveHitDamageModule = v_ObjectsHit[objectHitIndex].gameObject.GetComponent<CS_DamageModule>();
+                    if (v_ShockWaveHitDamageModule != null) { v_ShockWaveHitDamageModule.ApplyKineticDamage(v_KineticDamage); }
+                }// END - Kinetic shockwave for loop.
+            }
         } // END - Apply Kinetic.
 
         if (v_AllowBounce) { // Bounce.

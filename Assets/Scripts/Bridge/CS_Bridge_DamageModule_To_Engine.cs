@@ -2,7 +2,7 @@
 AUTHOR(S): LEE WILLIAMS     DATE: 10/2016 - 01/2017
 EDITOR(S): SCOTT ANDERS
 SCRIPT HOLDERS: PF_PlayerVehicle_*
-INBOUND REFERENCES: CS_PlayerDriver
+INBOUND REFERENCES: null
 OUTBOUND REFERENCES: CS_VehicleEngine
 OVERVIEW:  Bridges events from: CS_DamageModule, to: CS_VehicleEnigne.
         Purpose of bridge: To interconnect the damage module of the engine INSIDE the vehicle, and convert into a clamped 01 value to be used on EFFICIENCY.

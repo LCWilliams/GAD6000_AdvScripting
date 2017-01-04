@@ -63,6 +63,7 @@ public class CS_WheeledTankWeapons_00 : MonoBehaviour {
 
     //MISC:
     public GameObject go_CurrentMain;
+    public int v_CurrentMain;
     public GameObject go_CurrentMissile;
     public int v_SpawnCountPerPod;
     public float v_TimeBetweenLaunches;
@@ -114,8 +115,8 @@ public class CS_WheeledTankWeapons_00 : MonoBehaviour {
     } // END - fire main.
 
     public void ChangeMain() {
-        if(go_CurrentMain == go_Discus) { go_CurrentMain = go_Trident; }
-        else { go_CurrentMain = go_Discus; }
+        if(go_CurrentMain == go_Discus) { go_CurrentMain = go_Trident; v_CurrentMain = 1; }
+        else { go_CurrentMain = go_Discus; v_CurrentMain = 0; }
     } // END - Change Main;
 
     public void ChangeRocket() {

@@ -35,6 +35,16 @@ public class CS_WheeledTankInteriorPanels : MonoBehaviour {
     public GameObject GOGUI_RocketTarget;
     public Text GUI_RocketTargetDistance;
 
+
+    [Space(10)][Header("Weapons:")]
+    //public Image GUI_MainGunWeapon;
+    //public Image GUI_Missile;
+    public Image GUI_Discus;
+    public Image GUI_Trident;
+    public Image GUI_Javelin;
+    public Image GUI_Titan;
+    public Image GUI_Hellseeker;
+
     public Text GUI_TargetStatus;
     public Image GUI_TargetingProgress;
     float v_InitialTargetTime;
@@ -144,6 +154,31 @@ public class CS_WheeledTankInteriorPanels : MonoBehaviour {
             GUI_RocketCooldown.fillAmount = 1 - (v_TankWeapons.v_CurrentCooldown / v_TankWeapons.v_RocketCooldown);
             print(1 - (v_TankWeapons.v_CurrentCooldown / v_TankWeapons.v_RocketCooldown));
         } else{ GUI_RocketStatus.text = "MISSILES READY"; }
+
+
+        // Update - WEAPON SELECTION:
+        if(v_TankWeapons.v_CurrentMain == 0) {
+            GUI_Discus.enabled = true;
+            GUI_Trident.enabled = false;
+        } else{
+            GUI_Discus.enabled = false;
+            GUI_Trident.enabled = true;
+        } // END - Update main weapon selection.
+
+        if(v_TankWeapons.v_CurrentMissile == 0) {
+            GUI_Javelin.enabled = true;
+            GUI_Titan.enabled = false;
+            GUI_Hellseeker.enabled = false;
+        } else if(v_TankWeapons.v_CurrentMissile == 1) {
+            GUI_Javelin.enabled = false;
+            GUI_Titan.enabled = true;
+            GUI_Hellseeker.enabled = false;
+        } else{
+            GUI_Javelin.enabled = false;
+            GUI_Titan.enabled = false;
+            GUI_Hellseeker.enabled = true;
+        }
+
     } // END - Update Panels.
 
     void SparkEmitter_Decrease() {
