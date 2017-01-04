@@ -42,6 +42,7 @@ public class CS_AIDriver : MonoBehaviour
 //	private float v_Steer = 0.0f;
     public Transform v_playerTracker;
     GameObject v_playerTrackerObject;
+    private GameObject v_NextWaypoint;
 
 //	private BrakeCondition v_BrakeCondition = BrakeCondition.TargetDistance;		Temp
 
@@ -160,5 +161,10 @@ public class CS_AIDriver : MonoBehaviour
         }// END IF input.
 
     } // END PlayerChangeMode.
+
+    void NextWayPoint(GameObject newWayPoint)
+    {
+        v_NextWaypoint = newWayPoint;
+    }
 
 } // END - CS_PlayerDrive
