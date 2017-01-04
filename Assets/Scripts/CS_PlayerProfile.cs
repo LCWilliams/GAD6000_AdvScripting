@@ -34,6 +34,9 @@ public class CS_PlayerProfile : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+	    if (v_LevelsCompleted == 1)
+        {
+
+        }
 	}
 }
