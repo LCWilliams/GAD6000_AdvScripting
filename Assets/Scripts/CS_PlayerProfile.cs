@@ -17,6 +17,7 @@ public class CS_PlayerProfile : MonoBehaviour {
     public int v_CurrencyOwned;
     public bool v_Headbob;
     public int v_LevelsCompleted;
+    public int v_Vehicle;
 
     [Header("Unlocks:")]
     public bool v_UnlockedTrident;

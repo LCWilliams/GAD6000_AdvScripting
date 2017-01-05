@@ -33,6 +33,7 @@ public class CS_Bridge_DamageModule_To_SceneEvent : MonoBehaviour {
     // Use this for initialization
     void Start() {
         if(go_ObjectHealthToUse == null) { go_ObjectHealthToUse = gameObject; }
+
         v_DamageModule = go_ObjectHealthToUse.GetComponent<CS_DamageModule>();
     } // END - Start
 

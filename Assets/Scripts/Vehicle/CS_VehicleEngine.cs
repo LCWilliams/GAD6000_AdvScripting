@@ -82,8 +82,8 @@ public class CS_VehicleEngine : MonoBehaviour {
     void Start () {
         v_Gear = 0; // Set the gear as 0 by defualt.
         as_EngineAudioSource = GameObject.Find("Engine").GetComponent<AudioSource>();
-        v_Turret = GameObject.Find("Turret").GetComponent<Transform>();
-        v_Gun = GameObject.Find("Gun").GetComponent<Transform>();
+        //v_Turret = GameObject.Find("Turret").GetComponent<Transform>();
+        //v_Gun = GameObject.Find("Gun").GetComponent<Transform>();
         v_GunOriginalPosition = v_Gun.localRotation;
 	} // END - Start
 	

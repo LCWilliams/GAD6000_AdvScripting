@@ -10,6 +10,7 @@ OVERVIEW:  Provides functionality for the main menu.
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 #if UNITY_EDITOR
@@ -18,14 +19,19 @@ using UnityEditor;
 
 public class CS_MainMenu_00 : MonoBehaviour {
     // VARIABLES:
-    GameObject GUI_MainMenuPanel;
-    GameObject GUI_OptionsPanel;
-    GameObject GUI_CreditsPanel;
-    GameObject go_PlayerProfile;
+    public GameObject GUI_MainMenuPanel;
+    public GameObject GUI_OptionsPanel;
+    public GameObject go_PlayerProfilePREFAB;
+    public GameObject go_PlayerProfile;
     CS_PlayerProfile v_PlayerProfile;
 
     public AudioMixer AM_Music;
     public AudioMixer AM_Effects;
+
+    private void Start() {
+        go_PlayerProfile = GameObject.FindGameObjectWithTag("PlayerProfile");
+        if(go_PlayerProfile == null){ go_PlayerProfile =  Instantiate(go_PlayerProfilePREFAB); go_PlayerProfile.tag = "PlayerProfile"; }
+    }
 
     public void ModifyVolume_Music(float p_Volume) {
         AM_Music.SetFloat("volume_Music", p_Volume);
@@ -55,6 +61,19 @@ public class CS_MainMenu_00 : MonoBehaviour {
         v_PlayerProfile.v_Headbob = p_HeadbobEnabled;
     }
 
+    public void ShowOptions() {
+        GUI_OptionsPanel.SetActive(true);
+        GUI_MainMenuPanel.SetActive(false);
+    }
+
+    public void HideOptions() {
+        GUI_OptionsPanel.SetActive(false);
+        GUI_MainMenuPanel.SetActive(true);
+    }
+
+    public void StartGame() {
+        SceneManager.LoadSceneAsync(1, LoadSceneMode.Single);
+    }
 
     public void QuitToDesktop() {
 #if UNITY_EDITOR
